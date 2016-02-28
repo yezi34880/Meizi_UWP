@@ -12,10 +12,14 @@ using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using System.Linq;
+using System.Collections.Generic;
+using Windows.UI.Notifications;
+using Windows.Data.Xml.Dom;
+using System.Net;
 
 namespace Meizi
 {
-    public class Helper
+    public sealed class Helper
     {
 
         //获取HTML源代码
@@ -53,6 +57,7 @@ namespace Meizi
             double imageWidth = 236;
             var lis = doc.GetElementbyId("pins").SelectNodes("li");
             mainContent.Items.Clear();
+
             foreach (var li in lis)
             {
                 var a = li.FirstChild;
@@ -60,13 +65,15 @@ namespace Meizi
                 gvi.Tag = li.FirstChild.GetAttributeValue("href", "");
 
                 var img = a.FirstChild;
+                var imgUrl = img.GetAttributeValue("data-original", "");
                 Image image = new Image();
-                image.Source = new BitmapImage(new Uri(img.GetAttributeValue("data-original", "")));
+                image.Source = new BitmapImage(new Uri(imgUrl));
                 image.Height = imageHeight;
                 image.Width = imageWidth;
 
                 gvi.Content = image;
                 mainContent.Items.Add(gvi);
+
             }
             var pagenavi = doc.DocumentNode.Descendants("a").Where(d =>
                 d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("page-numbers")
@@ -150,4 +157,14 @@ namespace Meizi
         /// </summary>
         public int pageCount { get; set; }
     }
+
+    public static class Extension
+    {
+        public static void ForEach<T>(this IEnumerable<T> source, Action<T> func)
+        {
+            foreach (var item in source)
+                func(item);
+        }
+    }
+
 }

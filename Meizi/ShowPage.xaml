@@ -17,11 +17,20 @@
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
-            <TextBlock x:Name="textTitle" FontSize="24" FontFamily="微软雅黑" />
+        <Grid Grid.Row="0" >
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="textIndex" FontSize="24" FontFamily="微软雅黑" />
+                <TextBlock x:Name="textTitle" FontSize="24" FontFamily="微软雅黑" />
+            </StackPanel>
+            <ToggleButton HorizontalAlignment="Right" Padding="0">
+                <TextBlock Text="&#xE224;"
+                    FontSize="32" 
+                    FontFamily="Segoe MDL2 Assets"
+                    TextAlignment="Center"/>
+            </ToggleButton>
+        </Grid>
 
-        </StackPanel>
-        <FlipView Grid.Row="1" x:Name="flipMain">
+        <FlipView Grid.Row="1" x:Name="flipMain" SelectionChanged="flipMain_SelectionChanged">
 
         </FlipView>
     </Grid>

@@ -79,10 +79,10 @@
                                 Margin="0"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <!--<ListBoxItem Tag="8"  Name="LoginItem">
-                        --><!--登录--><!--
+                    <ListBoxItem Tag="5"  Name="LoginItem">
+                        <!--登录-->
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE2AF;" 
+                            <TextBlock Text="&#xE224;" 
                                        FontSize="30" 
                                        FontFamily="Segoe MDL2 Assets"
                                        TextAlignment="Center"
@@ -94,7 +94,6 @@
                                    VerticalAlignment="Center"
                                    Margin="0"
                                    Width="35">
-
                             </Image>
                             <TextBlock Text="收藏" 
                                        FontSize="24"
@@ -103,7 +102,7 @@
                                        Name="NickNameOrTip"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
-                    </ListBoxItem>-->
+                    </ListBoxItem>
                 </ListBox>
             </SplitView.Pane>
             <SplitView.Content>

@@ -1,27 +1,12 @@
 ﻿using HtmlAgilityPack;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics.Imaging;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.Storage.Provider;
-using Windows.Storage.Streams;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
@@ -56,15 +41,18 @@ namespace Meizi
                 string title = doc.DocumentNode.Descendants("h2").Where(d =>
                    d.Attributes.Contains("class") && d.Attributes["class"].Value == "main-title"
                     ).FirstOrDefault().InnerText;
-                textTitle.Text = title;
 
                 var liPageNavi = doc.DocumentNode.Descendants("div").Where(d =>
                     d.Attributes.Contains("class") && d.Attributes["class"].Value == "pagenavi"
                 ).FirstOrDefault().ChildNodes;
+
                 int count;
                 //if (liPageNavi.Count() > 3)
                 //{
                 count = int.Parse(liPageNavi[liPageNavi.Count - 3].FirstChild.InnerText);
+
+                textIndex.Text = "(1";
+                textTitle.Text = String.Format("/{0}){1}", count.ToString(), title);
                 //}
                 //else
                 //{
@@ -173,7 +161,11 @@ namespace Meizi
 
         }
 
-
+        private void flipMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var index = ((FlipView)sender).SelectedIndex + 1;
+            textIndex.Text = String.Format("({0}", index.ToString());
+        }
     }
 
 }

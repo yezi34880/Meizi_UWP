@@ -15,11 +15,24 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Meizi.App">
-      <uap:VisualElements DisplayName="Meizi" Square150x150Logo="Assets\img\Square150x150Logo.png" Square44x44Logo="Assets\img\Square44x44Logo.png" Description="Meizi" BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="看妹子" Square150x150Logo="Assets\img\Square150x150Logo.png" Square44x44Logo="Assets\img\Square44x44Logo.png" Description="福利看妹子" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\img\Wide310x150Logo.png" Square310x310Logo="Assets\img\Square310x310Logo.png" Square71x71Logo="Assets\img\Square71x71Logo.png">
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="portrait" />
+          <uap:Rotation Preference="landscape" />
+          <uap:Rotation Preference="portraitFlipped" />
+          <uap:Rotation Preference="landscapeFlipped" />
+        </uap:InitialRotationPreference>
       </uap:VisualElements>
+      <Extensions>
+        <Extension Category="windows.backgroundTasks" EntryPoint="BackgroundTask.LiveTileTask">
+          <BackgroundTasks>
+            <Task Type="timer" />
+          </BackgroundTasks>
+        </Extension>
+      </Extensions>
     </Application>
   </Applications>
   <Capabilities>

@@ -32,6 +32,7 @@ namespace Meizi
         public FirstPage()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Enabled;
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -58,6 +59,9 @@ namespace Meizi
             {
                 string html = await Helper.GetHttpWebRequest(pageUrl);
                 Helper.ShowImageList(html, mainContent);
+
+                //var tile = new LiveTile();
+                //tile.UpdateTile();
 
             }
             catch (Exception)
