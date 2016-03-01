@@ -36,7 +36,7 @@ namespace BackgroundTask
                 <binding template = 'TileWide'>
                   <image src='{0}' placement='background'/>
                 </binding>
-                <binding template = 'TileLarge' branding = 'logo' >
+                <binding template = 'TileLarge' branding = 'name' >
                   <image src='{0}' placement='background'/>
                 </binding>
               </visual>

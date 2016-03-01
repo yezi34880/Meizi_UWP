@@ -80,7 +80,7 @@
                         </StackPanel>
                     </ListBoxItem>
                     <ListBoxItem Tag="5"  Name="LoginItem">
-                        <!--登录-->
+                        <!--收藏-->
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE224;" 
                                        FontSize="30" 
@@ -100,6 +100,26 @@
                                        FontFamily="微软雅黑"
                                        Margin="12,0,0,0"
                                        Name="NickNameOrTip"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="9"  Name="AboutItem">
+                        <!--关于-->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8C9;" 
+                                       FontSize="30" 
+                                       FontFamily="Segoe MDL2 Assets"
+                                       TextAlignment="Center"
+                                       Padding="0,4,0,0" />
+                            <Image Visibility="Collapsed"
+                                   VerticalAlignment="Center"
+                                   Margin="0"
+                                   Width="35">
+                            </Image>
+                            <TextBlock Text="关于" 
+                                       FontSize="24"
+                                       FontFamily="微软雅黑"
+                                       Margin="12,0,0,0"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                     </ListBoxItem>

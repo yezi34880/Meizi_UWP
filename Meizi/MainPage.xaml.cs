@@ -25,7 +25,7 @@ using Windows.Web.Http.Headers;
 namespace Meizi
 {
     /// <summary>
-    /// 可用于自身或导航至 Frame 内部的空白页。
+    /// 主页面 （框架）
     /// </summary>
     public sealed partial class MainPage : Page
     {
@@ -65,32 +65,46 @@ namespace Meizi
             {
                 return;
             }
-            string url = "";
+            Url url = new Url();
             switch (index)
             {
-                case "1": url = "http://www.mzitu.com/"; break;
-                case "2": url = "http://www.mzitu.com/xinggan"; break;
-                case "3": url = "http://www.mzitu.com/japan"; break;
-                case "4": url = "http://www.mzitu.com/taiwan"; break;
-                default: url = "http://www.mzitu.com/"; break;
+                case "1": url.LinkUrl = "http://www.mzitu.com/"; break;
+                case "2": url.LinkUrl = "http://www.mzitu.com/xinggan"; break;
+                case "3": url.LinkUrl = "http://www.mzitu.com/japan"; break;
+                case "4": url.LinkUrl = "http://www.mzitu.com/taiwan"; break;
+                case "5": frameMain.Navigate(typeof(CollectionPage)); return;
+
+            }
+            if (String.IsNullOrEmpty(url.LinkUrl))
+            {
+                return;
             }
             frameMain.Navigate(typeof(FirstPage), url);
-
         }
-
-
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            frameMain.Navigate(typeof(FirstPage), "http://www.mzitu.com/");
+            frameMain.Navigate(typeof(FirstPage), new Url
+            {
+                ImageUrl = "",
+                LinkUrl = "http://www.mzitu.com/"
+            });
         }
 
         private void frameMain_Navigated(object sender, NavigationEventArgs e)
         {
+            if (e.Parameter == null)
+            {
+                return;
+            }
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                frameMain.CanGoBack ?
-                AppViewBackButtonVisibility.Visible :
-                AppViewBackButtonVisibility.Collapsed;
+                frameMain.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+            var p = ((Url)e.Parameter).LinkUrl;
+            if (p == "http://www.mzitu.com/" || p == "http://www.mzitu.com/xinggan" || p == "http://www.mzitu.com/japan" || p == "http://www.mzitu.com/taiwan")
+            {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            }
+
         }
 
     }

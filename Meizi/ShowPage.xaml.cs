@@ -1,4 +1,6 @@
-﻿using HtmlAgilityPack;
+﻿using DBHelper.Dal;
+using DBHelper.Model;
+using HtmlAgilityPack;
 using System;
 using System.Linq;
 using Windows.Networking.BackgroundTransfer;
@@ -13,11 +15,11 @@ using Windows.UI.Xaml.Navigation;
 namespace Meizi
 {
     /// <summary>
-    /// 可用于自身或导航至 Frame 内部的空白页。
+    /// 单张图片展示页面
     /// </summary>
     public sealed partial class ShowPage : Page
     {
-        string url;
+        Url url;
         public ShowPage()
         {
             this.InitializeComponent();
@@ -27,14 +29,21 @@ namespace Meizi
         {
             base.OnNavigatedTo(e);
             //这个e.Parameter是获取传递过来的参数
-            this.url = e.Parameter.ToString();
+            this.url = (Url)e.Parameter;
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                string html = await Helper.GetHttpWebRequest(url);
+                CollectionService dal = new CollectionService();
+                var model = dal.GetModel(r => r.ImageUrl == url.ImageUrl);
+                if (model != null)
+                {
+                    tooglebtnCollect.IsChecked = true;
+                }
+
+                string html = await Helper.GetHttpWebRequest(url.LinkUrl);
 
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
@@ -77,8 +86,8 @@ namespace Meizi
         {
             try
             {
-                string imageHtmlUrl = index > 1 ? String.Format("{0}/{1}", this.url, index.ToString()) : this.url;
-                string html = await Helper.GetHttpWebRequest(imageHtmlUrl);
+                string linkUrl = index > 1 ? String.Format("{0}/{1}", this.url.LinkUrl, index.ToString()) : this.url.LinkUrl;
+                string html = await Helper.GetHttpWebRequest(linkUrl);
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
 
@@ -144,7 +153,6 @@ namespace Meizi
             FolderPicker picker = new FolderPicker();
 
             picker.FileTypeFilter.Add(".jpg");
-            //picker.FileTypeFilter.Add("*");
 
             var sfolder = await picker.PickSingleFolderAsync();
             if (sfolder != null)
@@ -165,6 +173,27 @@ namespace Meizi
         {
             var index = ((FlipView)sender).SelectedIndex + 1;
             textIndex.Text = String.Format("({0}", index.ToString());
+        }
+
+        private void tooglebtnCollect_Click(object sender, RoutedEventArgs e)
+        {
+            var isCheck = tooglebtnCollect.IsChecked;
+            if (isCheck == true)
+            {
+                CollectionService dal = new CollectionService();
+                dal.Add(new Collection
+                {
+                    LinkUrl = this.url.LinkUrl,
+                    ImageUrl = this.url.ImageUrl,
+                    Title = ""
+                });
+            }
+            if (isCheck==false)
+            {
+                CollectionService dal = new CollectionService();
+                dal.Delete(r => r.ImageUrl == this.url.ImageUrl);
+            }
+
         }
     }
 
