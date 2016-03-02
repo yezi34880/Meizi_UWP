@@ -32,7 +32,7 @@ namespace Meizi
         public MainPage()
         {
             this.InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Enabled;
+            //NavigationCacheMode = NavigationCacheMode.Enabled;
             SystemNavigationManager.GetForCurrentView().BackRequested += (sender0, e0) =>
             {
                 if (frameMain.CanGoBack)

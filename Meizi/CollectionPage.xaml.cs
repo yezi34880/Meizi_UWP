@@ -1,4 +1,5 @@
 ﻿using DBHelper.Dal;
+using DBHelper.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,9 +26,14 @@ namespace Meizi
     public sealed partial class CollectionPage : Page
     {
 
+        private List<Collection> listUrls = new List<Collection>();
+
         public CollectionPage()
         {
             this.InitializeComponent();
+            CollectionService dal = new CollectionService();
+            listUrls = dal.GetList(r => true);
+            Loading.IsActive = false;
         }
 
         private void mainContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -36,40 +42,13 @@ namespace Meizi
             {
                 return;
             }
+            var image = (Collection)e.AddedItems[0];
             Url urlDetail = new Url
             {
-                LinkUrl = ((GridViewItem)e.AddedItems[0]).Tag.ToString(),
-                ImageUrl = (((Image)((GridViewItem)e.AddedItems[0]).Content).Source as BitmapImage).UriSource.AbsoluteUri
+                LinkUrl = image.LinkUrl,
+                ImageUrl = image.ImageUrl
             };
             this.Frame.Navigate(typeof(ShowPage), urlDetail);
-
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                CollectionService dal = new CollectionService();
-                var list = dal.GetList(r => true);
-                double imageHeight = 354;
-                double imageWidth = 236;
-
-                foreach (var item in list)
-                {
-                    GridViewItem gvi = new GridViewItem();
-                    gvi.Tag = item.LinkUrl;
-                    Image image = new Image();
-                    image.Source = new BitmapImage(new Uri(item.ImageUrl));
-                    image.Height = imageHeight;
-                    image.Width = imageWidth;
-                    gvi.Content = image;
-                    mainContent.Items.Add(gvi);
-                }
-            }
-            catch (Exception)
-            {
-
-            }
         }
 
     }

@@ -96,11 +96,19 @@ namespace Meizi
                 ).FirstOrDefault().FirstChild.FirstChild.FirstChild.GetAttributeValue("src", "");
 
                 FlipViewItem flipitem = new FlipViewItem();
-
                 Image image = new Image();
                 image.Source = new BitmapImage(new Uri(imageUrl));
+
+                Viewbox viewbox = new Viewbox();
+                ScrollViewer scrollview = new ScrollViewer();
+                scrollview.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                scrollview.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+                scrollview.ZoomMode = ZoomMode.Enabled;
+                scrollview.Content = image;
+                viewbox.Child = scrollview;
+
                 flipitem.Tag = imageUrl;
-                flipitem.Content = image;
+                flipitem.Content = viewbox;
 
                 flipitem.RightTapped += Flipitem_RightTapped;
                 flipMain.Items.Add(flipitem);

@@ -103,8 +103,8 @@
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Tag="9"  Name="AboutItem">
-                        <!--关于-->
+                    <!--<ListBoxItem Tag="9"  Name="AboutItem">
+                        --><!--关于--><!--
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8C9;" 
                                        FontSize="30" 
@@ -122,7 +122,7 @@
                                        Margin="12,0,0,0"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
-                    </ListBoxItem>
+                    </ListBoxItem>-->
                 </ListBox>
             </SplitView.Pane>
             <SplitView.Content>

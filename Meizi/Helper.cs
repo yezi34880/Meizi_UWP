@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
 using System.Net;
+using DBHelper.Model;
 
 namespace Meizi
 {
@@ -45,8 +46,27 @@ namespace Meizi
             {
                 throw;
             }
-
         }
+
+        //public static List<Collection> GetUrllist(string html)
+        //{
+        //    List<Collection> list = new List<Collection>();
+
+        //    HtmlDocument doc = new HtmlDocument();
+        //    doc.LoadHtml(html);
+
+        //    var lis = doc.GetElementbyId("pins").SelectNodes("li");
+        //    foreach (var li in lis)
+        //    {
+        //        var c = new Collection();
+        //        var a = li.FirstChild;
+        //        c.LinkUrl = li.FirstChild.GetAttributeValue("href", "");
+        //        c.ImageUrl = a.FirstChild.GetAttributeValue("data-original", "");
+        //        list.Add(c);
+        //    }
+
+        //    return list;
+        //}
 
         public static void ShowImageList(string html, GridView mainContent)
         {

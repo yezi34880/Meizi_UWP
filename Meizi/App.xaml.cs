@@ -174,7 +174,7 @@ namespace Meizi
                 var task = await RegisterBackgroundTask(
                     typeof(BackgroundTask.LiveTileTask),
                     "LiveTileTask",
-                    new TimeTrigger(60, false),
+                    new TimeTrigger(15, false),
                     null);
                 //task.Progress += TaskOnProgress;
                 //task.Completed += TaskOnCompleted;
