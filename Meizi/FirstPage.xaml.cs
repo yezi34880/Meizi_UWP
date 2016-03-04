@@ -31,12 +31,40 @@ namespace Meizi
         public FirstPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Enabled;
+        }
+
+
+        private async void Load()
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(this.pageUrl.LinkUrl))
+                {
+                    return;
+                }
+                string html = await Helper.GetHttpWebRequest(this.pageUrl.LinkUrl);
+                Helper.ShowImageList(html, mainContent);
+                Loading.IsActive = false;
+
+
+
+            }
+            catch (Exception)
+            {
+
+            }
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                return;
+            }
             //这个e.Parameter是获取传递过来的参数
             this.pageUrl = (Url)e.Parameter;
+            Load();
         }
 
         private void mainContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -45,36 +73,17 @@ namespace Meizi
             {
                 return;
             }
+            var item = (GridViewItem)e.AddedItems[0];
             Url urlDetail = new Url
             {
-                LinkUrl = ((GridViewItem)e.AddedItems[0]).Tag.ToString(),
-                ImageUrl = (((Image)((GridViewItem)e.AddedItems[0]).Content).Source as BitmapImage).UriSource.AbsoluteUri
+                LinkUrl = item.Tag.ToString(),
+                ImageUrl = (((Image)item.Content).Source as BitmapImage).UriSource.AbsoluteUri
             };
-
+            if (String.IsNullOrEmpty(urlDetail.LinkUrl))
+            {
+                return;
+            }
             this.Frame.Navigate(typeof(ShowPage), urlDetail);
-        }
-
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string html = await Helper.GetHttpWebRequest(this.pageUrl.LinkUrl);
-                Helper.ShowImageList(html, mainContent);
-                Loading.IsActive = false;
-
-            }
-            catch (Exception)
-            {
-
-            }
-
-            //获取 滚动条 
-            var scrollviewer = Helper.FindVisualChildByName<ScrollViewer>(mainContent, "ScrollViewer");
-            var scrollbar = Helper.FindVisualChildByName<ScrollBar>(scrollviewer, "VerticalScrollBar");
-            if (scrollbar != null)
-            {
-                scrollbar.ValueChanged += Scrollbar_ValueChanged;//绑定滚动事件
-            }
         }
 
         private async void Scrollbar_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -106,7 +115,27 @@ namespace Meizi
             }
         }
 
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            int countInRow = (int)mainContent.ActualWidth / 200;
+            var imageWidth = mainContent.ActualWidth / countInRow - 5;
+            foreach (var item in mainContent.Items)
+            {
+                var image = ((GridViewItem)item).Content as Image;
+                image.Width = imageWidth;
+                image.Height = imageWidth / 2 * 3;
+            }
+        }
+
+        private void mainContent_Loaded(object sender, RoutedEventArgs e)
+        {
+            //获取 滚动条 
+            var scrollviewer = Helper.FindVisualChildByName<ScrollViewer>(mainContent, "ScrollViewer");
+            var scrollbar = Helper.FindVisualChildByName<ScrollBar>(scrollviewer, "VerticalScrollBar");
+            if (scrollbar != null)
+            {
+                scrollbar.ValueChanged += Scrollbar_ValueChanged;//绑定滚动事件
+            }
+        }
     }
-
-
 }

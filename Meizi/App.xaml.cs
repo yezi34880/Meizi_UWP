@@ -176,8 +176,6 @@ namespace Meizi
                     "LiveTileTask",
                     new TimeTrigger(15, false),
                     null);
-                //task.Progress += TaskOnProgress;
-                //task.Completed += TaskOnCompleted;
 
             }
             catch (Exception e)

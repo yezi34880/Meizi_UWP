@@ -46,7 +46,7 @@ namespace BackgroundTask
         {
             try
             {
-                var rootUrl = "http://www.mzitu.com/";
+                var rootUrl = String.Format("{0}?random={1}", "http://www.mzitu.com/", DateTime.Now.ToString("HHmmssfff")); 
                 string html = "";
                 using (HttpClient http = new HttpClient())
                 using (HttpRequestMessage requestmsg = new HttpRequestMessage())

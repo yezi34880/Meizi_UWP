@@ -14,7 +14,7 @@
                 <ListBox Name="mainNavigationList"
                          SelectionMode="Single"
                          SelectionChanged="mainNavigationList_SelectionChanged">
-                    <ListBoxItem Tag="0" Tapped="ListBoxItem_Tapped">
+                    <ListBoxItem Tapped="ListBoxItem_Tapped">
                         <!-- 汉堡按钮 -->
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE700;" 
@@ -22,7 +22,7 @@
                                        FontFamily="Segoe MDL2 Assets"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Tag="1" >
+                    <ListBoxItem Tag="http://www.mzitu.com/" >
                         <!--首页-->
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE80F;" 
@@ -35,7 +35,7 @@
                                        Margin="12,0,0,0"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Tag="2" >
+                    <ListBoxItem Tag="http://www.mzitu.com/xinggan" >
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="性" 
                                        FontSize="30" 
@@ -47,7 +47,7 @@
                                        Margin="12,0,0,0"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Tag="3" >
+                    <ListBoxItem Tag="http://www.mzitu.com/japan" >
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="日" 
                                        FontSize="30" 
@@ -59,7 +59,7 @@
                                        Margin="12,0,0,0"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Tag="4" >
+                    <ListBoxItem Tag="http://www.mzitu.com/taiwan" >
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="台" 
                                        FontSize="30" 
@@ -79,7 +79,7 @@
                                 Margin="0"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Tag="5"  Name="LoginItem">
+                    <ListBoxItem  Name="CollectItem">
                         <!--收藏-->
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE224;" 
@@ -103,8 +103,8 @@
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <!--<ListBoxItem Tag="9"  Name="AboutItem">
-                        --><!--关于--><!--
+                    <ListBoxItem  Name="AboutItem" >
+                        <!--关于-->
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8C9;" 
                                        FontSize="30" 
@@ -122,7 +122,7 @@
                                        Margin="12,0,0,0"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
-                    </ListBoxItem>-->
+                    </ListBoxItem>
                 </ListBox>
             </SplitView.Pane>
             <SplitView.Content>

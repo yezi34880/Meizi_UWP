@@ -25,15 +25,9 @@ namespace Meizi
     /// </summary>
     public sealed partial class CollectionPage : Page
     {
-
-        private List<Collection> listUrls = new List<Collection>();
-
         public CollectionPage()
         {
             this.InitializeComponent();
-            CollectionService dal = new CollectionService();
-            listUrls = dal.GetList(r => true);
-            Loading.IsActive = false;
         }
 
         private void mainContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -42,14 +36,47 @@ namespace Meizi
             {
                 return;
             }
-            var image = (Collection)e.AddedItems[0];
+            var image = (e.AddedItems[0] as GridViewItem).Content as Image;
             Url urlDetail = new Url
             {
-                LinkUrl = image.LinkUrl,
-                ImageUrl = image.ImageUrl
+                LinkUrl = image.Tag.ToString(),
+                ImageUrl = (image.Source as BitmapImage).UriSource.AbsoluteUri
             };
             this.Frame.Navigate(typeof(ShowPage), urlDetail);
         }
 
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            int countInRow = (int)mainContent.ActualWidth / 200;
+            var imageWidth = mainContent.ActualWidth / countInRow - 5;
+            foreach (var item in mainContent.Items)
+            {
+                var image = ((GridViewItem)item).Content as Image;
+                image.Width = imageWidth;
+                image.Height = imageWidth / 2 * 3;
+            }
+        }
+
+        private void mainContent_Loaded(object sender, RoutedEventArgs e)
+        {
+            int countInRow = (int)mainContent.ActualWidth / 200;
+            var imageWidth = mainContent.ActualWidth / countInRow - 5;
+
+            CollectionService dal = new CollectionService();
+            var listUrls = dal.GetList(r => true);
+            foreach (var item in listUrls)
+            {
+                GridViewItem gvi = new GridViewItem();
+                Image img = new Image();
+                img.Source = new BitmapImage(new Uri(item.ImageUrl));
+                img.Tag = item.LinkUrl;
+                img.Width = imageWidth;
+                img.Height = imageWidth / 2 * 3;
+                gvi.Content = img;
+                mainContent.Items.Add(gvi);
+            }
+            Loading.IsActive = false;
+
+        }
     }
 }

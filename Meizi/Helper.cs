@@ -22,7 +22,6 @@ namespace Meizi
 {
     public sealed class Helper
     {
-
         //获取HTML源代码
         public static async Task<string> GetHttpWebRequest(string url)
         {
@@ -32,7 +31,7 @@ namespace Meizi
                 using (HttpRequestMessage requestmsg = new HttpRequestMessage())
                 {
                     requestmsg.Method = HttpMethod.Get;
-                    requestmsg.RequestUri = new Uri(url);
+                    requestmsg.RequestUri = new Uri(String.Format("{0}?random={1}", url.TrimEnd('/'), DateTime.Now.ToString("HHmmssfff")));
                     requestmsg.Headers.Append("Accept-Language", "zh-CN,zh;q=0.8");
                     requestmsg.Headers.Append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36 QQBrowser/9.3.6581.400");
 
@@ -48,33 +47,14 @@ namespace Meizi
             }
         }
 
-        //public static List<Collection> GetUrllist(string html)
-        //{
-        //    List<Collection> list = new List<Collection>();
-
-        //    HtmlDocument doc = new HtmlDocument();
-        //    doc.LoadHtml(html);
-
-        //    var lis = doc.GetElementbyId("pins").SelectNodes("li");
-        //    foreach (var li in lis)
-        //    {
-        //        var c = new Collection();
-        //        var a = li.FirstChild;
-        //        c.LinkUrl = li.FirstChild.GetAttributeValue("href", "");
-        //        c.ImageUrl = a.FirstChild.GetAttributeValue("data-original", "");
-        //        list.Add(c);
-        //    }
-
-        //    return list;
-        //}
-
         public static void ShowImageList(string html, GridView mainContent)
         {
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            double imageHeight = 354;
-            double imageWidth = 236;
+            int countInRow = (int)mainContent.ActualWidth / 200;
+            var imageWidth = mainContent.ActualWidth / countInRow - 5;
+
             var lis = doc.GetElementbyId("pins").SelectNodes("li");
             mainContent.Items.Clear();
 
@@ -88,8 +68,8 @@ namespace Meizi
                 var imgUrl = img.GetAttributeValue("data-original", "");
                 Image image = new Image();
                 image.Source = new BitmapImage(new Uri(imgUrl));
-                image.Height = imageHeight;
                 image.Width = imageWidth;
+                image.Height = imageWidth / 2 * 3;
 
                 gvi.Content = image;
                 mainContent.Items.Add(gvi);
@@ -176,6 +156,20 @@ namespace Meizi
         /// 总页数
         /// </summary>
         public int pageCount { get; set; }
+    }
+
+    public class Url
+    {
+        /// <summary>
+        /// 链接 URL，用于页面跳转
+        /// </summary>
+        public string ImageUrl { get; set; }
+
+        /// <summary>
+        /// 图片URL ，用于图片展示
+        /// </summary>
+        public string LinkUrl { get; set; }
+
     }
 
     public static class Extension

@@ -6,15 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:DBHelper.Model"
-    mc:Ignorable="d" >
+    mc:Ignorable="d" SizeChanged="Page_SizeChanged" >
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <GridView  x:Name="mainContent"  SelectionChanged="mainContent_SelectionChanged" ItemsSource="{x:Bind listUrls}" >
-            <GridView.ItemTemplate>
-                <DataTemplate x:DataType="model:Collection">
-                    <Image Width="236" Height="354" Tag="{x:Bind LinkUrl}" Source="{x:Bind ImageUrl}"></Image>
-                </DataTemplate>
-            </GridView.ItemTemplate>
+        <GridView  x:Name="mainContent"  SelectionChanged="mainContent_SelectionChanged" Loaded="mainContent_Loaded" >
+
         </GridView>
         <ProgressRing Name="Loading"
                       Width="100"

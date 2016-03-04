@@ -46,7 +46,7 @@ namespace Meizi
         private void ListBoxItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             ListBoxItem tapped_item = sender as ListBoxItem;
-            if (tapped_item != null && tapped_item.Tag != null && tapped_item.Tag.ToString().Equals("0")) //汉堡按钮
+            if (tapped_item != null) //汉堡按钮
             {
                 mainSplitView.IsPaneOpen = !mainSplitView.IsPaneOpen;
             }
@@ -60,25 +60,19 @@ namespace Meizi
             {
                 return;
             }
-            var index = (e.AddedItems[0] as ListBoxItem).Tag.ToString();
-            if (index == "0")
+            var item = e.AddedItems[0] as ListBoxItem;
+            if (item.Name == "CollectItem")
+            {
+                frameMain.Navigate(typeof(CollectionPage));
+                return;
+            }
+            var LinkUrl = (item.Tag ?? "").ToString();
+            if (String.IsNullOrEmpty(LinkUrl))
             {
                 return;
             }
             Url url = new Url();
-            switch (index)
-            {
-                case "1": url.LinkUrl = "http://www.mzitu.com/"; break;
-                case "2": url.LinkUrl = "http://www.mzitu.com/xinggan"; break;
-                case "3": url.LinkUrl = "http://www.mzitu.com/japan"; break;
-                case "4": url.LinkUrl = "http://www.mzitu.com/taiwan"; break;
-                case "5": frameMain.Navigate(typeof(CollectionPage)); return;
-
-            }
-            if (String.IsNullOrEmpty(url.LinkUrl))
-            {
-                return;
-            }
+            url.LinkUrl =   LinkUrl ;
             frameMain.Navigate(typeof(FirstPage), url);
         }
 
@@ -95,14 +89,21 @@ namespace Meizi
         {
             if (e.Parameter == null)
             {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 return;
             }
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                frameMain.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
             var p = ((Url)e.Parameter).LinkUrl;
-            if (p == "http://www.mzitu.com/" || p == "http://www.mzitu.com/xinggan" || p == "http://www.mzitu.com/japan" || p == "http://www.mzitu.com/taiwan")
+            var str = p.Substring(p.LastIndexOf('/')+1);
+            int result;
+            if (int.TryParse(str,out result)==false)
             {
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            }
+            else
+            {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                    frameMain.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+
             }
 
         }
