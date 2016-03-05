@@ -22,12 +22,21 @@
                 <TextBlock x:Name="textIndex" FontSize="24" FontFamily="微软雅黑" />
                 <TextBlock x:Name="textTitle" FontSize="24" FontFamily="微软雅黑" />
             </StackPanel>
+            <TextBox x:Name="txt"></TextBox>
             <ToggleButton x:Name="tooglebtnCollect" HorizontalAlignment="Right" Padding="0" Click="tooglebtnCollect_Click"  >
                 <TextBlock Text="&#xE224;"
                     FontSize="32" 
                     FontFamily="Segoe MDL2 Assets"
                     TextAlignment="Center" SelectionHighlightColor="#FF0078D7" />
             </ToggleButton>
+            <SemanticZoom HorizontalAlignment="Left" VerticalAlignment="Top">
+                <SemanticZoom.ZoomedInView>
+                    <GridView ScrollViewer.IsHorizontalScrollChainingEnabled="False" ScrollViewer.IsVerticalScrollChainingEnabled="False"/>
+                </SemanticZoom.ZoomedInView>
+                <SemanticZoom.ZoomedOutView>
+                    <GridView ScrollViewer.IsHorizontalScrollChainingEnabled="False" ScrollViewer.IsVerticalScrollChainingEnabled="False"/>
+                </SemanticZoom.ZoomedOutView>
+            </SemanticZoom>
         </Grid>
 
         <FlipView Grid.Row="1" x:Name="flipMain" SelectionChanged="flipMain_SelectionChanged">

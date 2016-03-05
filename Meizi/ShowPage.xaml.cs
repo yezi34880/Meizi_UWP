@@ -98,17 +98,14 @@ namespace Meizi
                 FlipViewItem flipitem = new FlipViewItem();
                 Image image = new Image();
                 image.Source = new BitmapImage(new Uri(imageUrl));
-
-                Viewbox viewbox = new Viewbox();
+                image.Height = flipMain.ActualHeight;
                 ScrollViewer scrollview = new ScrollViewer();
                 scrollview.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
                 scrollview.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
                 scrollview.ZoomMode = ZoomMode.Enabled;
                 scrollview.Content = image;
-                viewbox.Child = scrollview;
-
                 flipitem.Tag = imageUrl;
-                flipitem.Content = viewbox;
+                flipitem.Content = scrollview;
 
                 flipitem.RightTapped += Flipitem_RightTapped;
                 flipMain.Items.Add(flipitem);
@@ -196,7 +193,7 @@ namespace Meizi
                     Title = ""
                 });
             }
-            if (isCheck==false)
+            if (isCheck == false)
             {
                 CollectionService dal = new CollectionService();
                 dal.Delete(r => r.ImageUrl == this.url.ImageUrl);

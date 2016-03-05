@@ -98,8 +98,8 @@ namespace Meizi
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            double imageHeight = 354;
-            double imageWidth = 236;
+            int countInRow = (int)mainContent.ActualWidth / 200;
+            var imageWidth = mainContent.ActualWidth / countInRow - 5;
             var lis = doc.GetElementbyId("pins").SelectNodes("li");
             //mainContent.Items.Clear();
             foreach (var li in lis)
@@ -111,8 +111,8 @@ namespace Meizi
                 var img = a.FirstChild;
                 Image image = new Image();
                 image.Source = new BitmapImage(new Uri(img.GetAttributeValue("data-original", "")));
-                image.Height = imageHeight;
                 image.Width = imageWidth;
+                image.Height = imageWidth / 2 * 3;
                 gvi.Content = image;
                 mainContent.Items.Add(gvi);
             }
