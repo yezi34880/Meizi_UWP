@@ -1,4 +1,6 @@
-﻿using HtmlAgilityPack;
+﻿using DBHelper.Dal;
+using DBHelper.Model;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +28,6 @@ namespace Meizi
     /// </summary>
     public sealed partial class FirstPage : Page
     {
-        Url pageUrl;
 
         public FirstPage()
         {
@@ -35,24 +36,18 @@ namespace Meizi
         }
 
 
-        private async void Load()
+        private async void Load(string strUrl)
         {
             try
             {
-                if (String.IsNullOrEmpty(this.pageUrl.LinkUrl))
-                {
-                    return;
-                }
-                string html = await Helper.GetHttpWebRequest(this.pageUrl.LinkUrl);
+                string html = await Helper.GetHttpWebRequest(strUrl);
                 Helper.ShowImageList(html, mainContent);
                 Loading.IsActive = false;
 
-
-
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Helper.WriteExceptionLog(e.Message);
             }
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -63,8 +58,7 @@ namespace Meizi
                 return;
             }
             //这个e.Parameter是获取传递过来的参数
-            this.pageUrl = (Url)e.Parameter;
-            Load();
+            Load("http://www.mzitu.com/");
         }
 
         private void mainContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -73,11 +67,11 @@ namespace Meizi
             {
                 return;
             }
-            var item = (GridViewItem)e.AddedItems[0];
+            var image = (Image)((GridViewItem)e.AddedItems[0]).Content;
             Url urlDetail = new Url
             {
-                LinkUrl = item.Tag.ToString(),
-                ImageUrl = (((Image)item.Content).Source as BitmapImage).UriSource.AbsoluteUri
+                LinkUrl = image.Tag.ToString(),
+                ImageUrl = (image.Source as BitmapImage).UriSource.AbsoluteUri
             };
             if (String.IsNullOrEmpty(urlDetail.LinkUrl))
             {
@@ -101,15 +95,21 @@ namespace Meizi
                 try
                 {
                     var index = page.pageNow;
-                    string url = this.pageUrl.LinkUrl + "/page/" + (index + 1).ToString();
+                    var item = mainNavigationList.SelectedItem as ListBoxItem;
+
+                    var LinkUrl = item==null? "http://www.mzitu.com/" : item.Tag.ToString();
+                    if (String.IsNullOrEmpty(LinkUrl))
+                    {
+                        return;
+                    }
+                    string url = LinkUrl + "/page/" + (index + 1).ToString();
                     string html = await Helper.GetHttpWebRequest(url);
                     Helper.AppendImageList(html, mainContent);
                     page.pageNow++;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
-
+                    Helper.WriteExceptionLog(ex.Message);
                 }
                 Loading.IsActive = false;
             }
@@ -118,6 +118,10 @@ namespace Meizi
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             int countInRow = (int)mainContent.ActualWidth / 200;
+            if (countInRow<2)
+            {
+                countInRow = 2;
+            }
             var imageWidth = mainContent.ActualWidth / countInRow - 5;
             foreach (var item in mainContent.Items)
             {
@@ -137,5 +141,57 @@ namespace Meizi
                 scrollbar.ValueChanged += Scrollbar_ValueChanged;//绑定滚动事件
             }
         }
+
+        private void menu_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            mainSplitView.IsPaneOpen = !mainSplitView.IsPaneOpen;
+        }
+
+        private async void mainNavigationList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count < 1)
+            {
+                return;
+            }
+            var item = e.AddedItems[0] as ListBoxItem;
+            if (item.Name == "CollectItem")
+            {
+                Loading.IsActive = true;
+                int countInRow = (int)mainContent.ActualWidth / 200;
+                if (countInRow < 2)
+                {
+                    countInRow = 2;
+                }
+
+                var imageWidth = mainContent.ActualWidth / countInRow - 5;
+                CollectionService dal = new CollectionService();
+                var listUrls = dal.GetList(r => true);
+                mainContent.Items.Clear();
+                foreach (var url in listUrls)
+                {
+                    GridViewItem gvi = new GridViewItem();
+                    Image img = new Image();
+                    img.Source = new BitmapImage(new Uri(url.ImageUrl));
+                    img.Tag = url.LinkUrl;
+                    img.Width = imageWidth;
+                    img.Height = imageWidth / 2 * 3;
+                    gvi.Content = img;
+                    mainContent.Items.Add(gvi);
+                }
+                Loading.IsActive = false;
+                return;
+            }
+            var LinkUrl = (item.Tag ?? "").ToString();
+            if (String.IsNullOrEmpty(LinkUrl))
+            {
+                return;
+            }
+            Loading.IsActive = true;
+            string html = await Helper.GetHttpWebRequest(LinkUrl);
+            Helper.ShowImageList(html, mainContent);
+            Loading.IsActive = false;
+
+        }
+
     }
 }

@@ -53,6 +53,10 @@ namespace Meizi
             doc.LoadHtml(html);
 
             int countInRow = (int)mainContent.ActualWidth / 200;
+            if (countInRow < 2)
+            {
+                countInRow = 2;
+            }
             var imageWidth = mainContent.ActualWidth / countInRow - 5;
 
             var lis = doc.GetElementbyId("pins").SelectNodes("li");
@@ -62,7 +66,6 @@ namespace Meizi
             {
                 var a = li.FirstChild;
                 GridViewItem gvi = new GridViewItem();
-                gvi.Tag = li.FirstChild.GetAttributeValue("href", "");
 
                 var img = a.FirstChild;
                 var imgUrl = img.GetAttributeValue("data-original", "");
@@ -70,7 +73,7 @@ namespace Meizi
                 image.Source = new BitmapImage(new Uri(imgUrl));
                 image.Width = imageWidth;
                 image.Height = imageWidth / 2 * 3;
-
+                image.Tag = li.FirstChild.GetAttributeValue("href", "");
                 gvi.Content = image;
                 mainContent.Items.Add(gvi);
 
@@ -101,21 +104,30 @@ namespace Meizi
             int countInRow = (int)mainContent.ActualWidth / 200;
             var imageWidth = mainContent.ActualWidth / countInRow - 5;
             var lis = doc.GetElementbyId("pins").SelectNodes("li");
-            //mainContent.Items.Clear();
             foreach (var li in lis)
             {
                 var a = li.FirstChild;
                 GridViewItem gvi = new GridViewItem();
-                gvi.Tag = li.FirstChild.GetAttributeValue("href", "");
 
                 var img = a.FirstChild;
+                var imgUrl = img.GetAttributeValue("data-original", "");
                 Image image = new Image();
-                image.Source = new BitmapImage(new Uri(img.GetAttributeValue("data-original", "")));
+                image.Source = new BitmapImage(new Uri(imgUrl));
                 image.Width = imageWidth;
                 image.Height = imageWidth / 2 * 3;
+                image.Tag = li.FirstChild.GetAttributeValue("href", "");
                 gvi.Content = image;
                 mainContent.Items.Add(gvi);
             }
+
+            var page = mainContent.Tag as PageNavi;
+
+            mainContent.Tag = new PageNavi()
+            {
+                pageNow = page.pageNow + 1,
+                pageCount = page.pageCount
+            };
+
         }
 
         /// <summary>
@@ -143,6 +155,46 @@ namespace Meizi
                 }
             }
             return null;
+        }
+
+        public static async void WriteExceptionLog(string log)
+        {
+            try
+            {
+                StorageFolder folder = ApplicationData.Current.LocalFolder;
+                StorageFile file_demonstration = await folder.CreateFileAsync("ExceptionLog.log", CreationCollisionOption.OpenIfExists);
+
+                string fileContent = "";
+                //读文件
+                using (IRandomAccessStream readStream = await file_demonstration.OpenAsync(FileAccessMode.Read))
+                {
+                    using (DataReader dataReader = new DataReader(readStream))
+                    {
+                        UInt64 size = readStream.Size;
+                        if (size <= UInt32.MaxValue)
+                        {
+                            UInt32 numBytesLoaded = await dataReader.LoadAsync((UInt32)size);
+                            fileContent = dataReader.ReadString(numBytesLoaded);
+                        }
+                    }
+                }
+                //写文件
+                using (StorageStreamTransaction transaction = await file_demonstration.OpenTransactedWriteAsync())
+                {
+                    using (DataWriter dataWriter = new DataWriter(transaction.Stream))
+                    {
+                        var str = String.Format("{0}{1}  {2}\r\n", fileContent, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), log);
+                        dataWriter.WriteString(str);
+                        transaction.Stream.Size = await dataWriter.StoreAsync();
+                        await transaction.CommitAsync();
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 

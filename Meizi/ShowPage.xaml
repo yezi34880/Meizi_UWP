@@ -22,7 +22,6 @@
                 <TextBlock x:Name="textIndex" FontSize="24" FontFamily="微软雅黑" />
                 <TextBlock x:Name="textTitle" FontSize="24" FontFamily="微软雅黑" />
             </StackPanel>
-            <TextBox x:Name="txt"></TextBox>
             <ToggleButton x:Name="tooglebtnCollect" HorizontalAlignment="Right" Padding="0" Click="tooglebtnCollect_Click"  >
                 <TextBlock Text="&#xE224;"
                     FontSize="32" 

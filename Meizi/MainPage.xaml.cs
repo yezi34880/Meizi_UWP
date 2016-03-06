@@ -43,68 +43,16 @@ namespace Meizi
             };
         }
 
-        private void ListBoxItem_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            ListBoxItem tapped_item = sender as ListBoxItem;
-            if (tapped_item != null) //汉堡按钮
-            {
-                mainSplitView.IsPaneOpen = !mainSplitView.IsPaneOpen;
-            }
-        }
-
-
-
-        private void mainNavigationList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count < 1)
-            {
-                return;
-            }
-            var item = e.AddedItems[0] as ListBoxItem;
-            if (item.Name == "CollectItem")
-            {
-                frameMain.Navigate(typeof(CollectionPage));
-                return;
-            }
-            var LinkUrl = (item.Tag ?? "").ToString();
-            if (String.IsNullOrEmpty(LinkUrl))
-            {
-                return;
-            }
-            Url url = new Url();
-            url.LinkUrl =   LinkUrl ;
-            frameMain.Navigate(typeof(FirstPage), url);
-        }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            frameMain.Navigate(typeof(FirstPage), new Url
-            {
-                ImageUrl = "",
-                LinkUrl = "http://www.mzitu.com/"
-            });
+            frameMain.Navigate(typeof(FirstPage));
         }
 
         private void frameMain_Navigated(object sender, NavigationEventArgs e)
         {
-            if (e.Parameter == null)
-            {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                return;
-            }
-            var p = ((Url)e.Parameter).LinkUrl;
-            var str = p.Substring(p.LastIndexOf('/')+1);
-            int result;
-            if (int.TryParse(str,out result)==false)
-            {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            }
-            else
-            {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                    frameMain.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
-
-            }
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                frameMain.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
 
         }
 

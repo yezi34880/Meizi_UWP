@@ -75,8 +75,9 @@ namespace Meizi
                 //var lis = doc.GetElementbyId("pins").SelectNodes("li");
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Helper.WriteExceptionLog(ex.Message);
 
             }
 
@@ -111,8 +112,9 @@ namespace Meizi
                 flipMain.Items.Add(flipitem);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Helper.WriteExceptionLog(ex.Message);
 
             }
         }
