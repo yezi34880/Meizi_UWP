@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using DBHelper.Dal;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,14 @@ using Windows.Web.Http;
 namespace BackgroundTask
 {
     /// <summary>
-    /// 后台任务 更新 动态磁贴
+    /// 后台任务 更新 动态磁贴 (动态磁贴展示收藏内容)
     /// </summary>
     public sealed class LiveTileTask : IBackgroundTask
     {
         public  void Run(IBackgroundTaskInstance taskInstance)
         {
             var deferral = taskInstance.GetDeferral();
-            //System.Diagnostics.Debug.Write("run");
+
             UpdateTile();
 
             deferral.Complete();
@@ -42,35 +43,12 @@ namespace BackgroundTask
               </visual>
             </tile>";
 
-        public async void UpdateTile()
+        public void UpdateTile()
         {
             try
             {
-                var rootUrl = String.Format("{0}?random={1}", "http://www.mzitu.com/", DateTime.Now.ToString("HHmmssfff")); 
-                string html = "";
-                using (HttpClient http = new HttpClient())
-                using (HttpRequestMessage requestmsg = new HttpRequestMessage())
-                {
-                    requestmsg.Method = HttpMethod.Get;
-                    requestmsg.RequestUri = new Uri(rootUrl);
-                    requestmsg.Headers.Append("Accept-Language", "zh-CN,zh;q=0.8");
-                    requestmsg.Headers.Append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36 QQBrowser/9.3.6581.400");
-
-                    using (HttpResponseMessage response = await http.SendRequestAsync(requestmsg))
-                    {
-                        html = response.Content.ToString();
-                    }
-                }
-
-                HtmlDocument htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(html);
-                var lis = htmlDoc.GetElementbyId("pins").SelectNodes("li").Take(5).ToList();
-                var listUrls = new List<string>();
-                foreach (var li in lis)
-                {
-                    var url = li.FirstChild.FirstChild.GetAttributeValue("data-original", "");
-                    listUrls.Add(url);
-                }
+                CollectionService dal = new CollectionService();
+                var listUrls = dal.GetListRandom(5);
 
                 var updater = TileUpdateManager.CreateTileUpdaterForApplication();
                 updater.EnableNotificationQueueForWide310x150(true);
@@ -82,7 +60,7 @@ namespace BackgroundTask
                 foreach (var url in listUrls)
                 {
                     var xmlDoc = new XmlDocument();
-                    var xml = string.Format(TileTemplateXml, url);
+                    var xml = string.Format(TileTemplateXml, url.ImageUrl);
                     xmlDoc.LoadXml(WebUtility.HtmlDecode(xml), new XmlLoadSettings
                     {
                         ProhibitDtd = false,

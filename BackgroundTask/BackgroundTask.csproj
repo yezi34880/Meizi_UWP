@@ -117,6 +117,12 @@
       <HintPath>..\Meizi\Lib\HtmlAgilityPack.Win10.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dal\DBHelper.csproj">
+      <Project>{74047120-dbdc-4285-9065-4aafd2154299}</Project>
+      <Name>DBHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
