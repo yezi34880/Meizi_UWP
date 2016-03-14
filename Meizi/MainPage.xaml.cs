@@ -1,4 +1,6 @@
-﻿using HtmlAgilityPack;
+﻿using DBHelper.Dal;
+using DBHelper.Model;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,6 +48,9 @@ namespace Meizi
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+            CollectionService dal = new CollectionService();
+            dal.CreateTable(typeof(Collection));
+
             frameMain.Navigate(typeof(FirstPage));
         }
 

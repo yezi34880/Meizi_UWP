@@ -1,0 +1,26 @@
+﻿<ContentDialog
+    x:Class="Meizi.AboutDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Meizi"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="关于"
+    PrimaryButtonText="确定"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Margin="0,7,0,0">数据来源：</TextBlock>
+            <HyperlinkButton >http://www.mzitu.com/</HyperlinkButton>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBlock Margin="0,7,0,0">作者：渃水</TextBlock>
+        </StackPanel>
+
+    </Grid>
+</ContentDialog>

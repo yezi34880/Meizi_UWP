@@ -149,47 +149,62 @@ namespace Meizi
 
         private async void mainNavigationList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count < 1)
+            try
             {
-                return;
-            }
-            var item = e.AddedItems[0] as ListBoxItem;
-            if (item.Name == "CollectItem")
-            {
-                Loading.IsActive = true;
-                int countInRow = (int)mainContent.ActualWidth / 200;
-                if (countInRow < 2)
+                if (e.AddedItems.Count < 1)
                 {
-                    countInRow = 2;
+                    return;
                 }
+                var item = e.AddedItems[0] as ListBoxItem;
+                if (item.Name == "AboutItem")
+                {
+                    AboutDialog ad = new AboutDialog();
+                    await ad.ShowAsync();
 
-                var imageWidth = mainContent.ActualWidth / countInRow - 5;
-                CollectionService dal = new CollectionService();
-                var listUrls = dal.GetList(r => true);
-                mainContent.Items.Clear();
-                foreach (var url in listUrls)
-                {
-                    GridViewItem gvi = new GridViewItem();
-                    Image img = new Image();
-                    img.Source = new BitmapImage(new Uri(url.ImageUrl));
-                    img.Tag = url.LinkUrl;
-                    img.Width = imageWidth;
-                    img.Height = imageWidth / 2 * 3;
-                    gvi.Content = img;
-                    mainContent.Items.Add(gvi);
+                    return;
                 }
+                if (item.Name == "CollectItem")
+                {
+                    Loading.IsActive = true;
+                    int countInRow = (int)mainContent.ActualWidth / 200;
+                    if (countInRow < 2)
+                    {
+                        countInRow = 2;
+                    }
+
+                    var imageWidth = mainContent.ActualWidth / countInRow - 5;
+                    CollectionService dal = new CollectionService();
+                    var listUrls = dal.GetList(r => true);
+                    mainContent.Items.Clear();
+                    foreach (var url in listUrls)
+                    {
+                        GridViewItem gvi = new GridViewItem();
+                        Image img = new Image();
+                        img.Source = new BitmapImage(new Uri(url.ImageUrl));
+                        img.Tag = url.LinkUrl;
+                        img.Width = imageWidth;
+                        img.Height = imageWidth / 2 * 3;
+                        gvi.Content = img;
+                        mainContent.Items.Add(gvi);
+                    }
+                    Loading.IsActive = false;
+                    return;
+                }
+                var LinkUrl = (item.Tag ?? "").ToString();
+                if (String.IsNullOrEmpty(LinkUrl))
+                {
+                    return;
+                }
+                Loading.IsActive = true;
+                string html = await Helper.GetHttpWebRequest(LinkUrl);
+                Helper.ShowImageList(html, mainContent);
                 Loading.IsActive = false;
-                return;
+
             }
-            var LinkUrl = (item.Tag ?? "").ToString();
-            if (String.IsNullOrEmpty(LinkUrl))
+            catch (Exception ex)
             {
-                return;
+                Helper.WriteExceptionLog(ex.Message);
             }
-            Loading.IsActive = true;
-            string html = await Helper.GetHttpWebRequest(LinkUrl);
-            Helper.ShowImageList(html, mainContent);
-            Loading.IsActive = false;
 
         }
 

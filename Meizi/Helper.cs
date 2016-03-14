@@ -191,9 +191,9 @@ namespace Meizi
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                //throw;
             }
         }
     }

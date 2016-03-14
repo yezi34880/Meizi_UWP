@@ -5,7 +5,7 @@
     xmlns:local="using:Meizi"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Page_Loaded">
+    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
     <Page.Resources>
         <MenuFlyout x:Key="ImageMenuFlyout">
             <MenuFlyoutItem Text="保存图片" Click="SaveImage_Click"/>
@@ -14,28 +14,26 @@
     </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="38"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" >
-            <StackPanel Orientation="Horizontal">
-                <TextBlock x:Name="textIndex" FontSize="24" FontFamily="微软雅黑" />
-                <TextBlock x:Name="textTitle" FontSize="24" FontFamily="微软雅黑" />
-            </StackPanel>
-            <ToggleButton x:Name="tooglebtnCollect" HorizontalAlignment="Right" Padding="0" Click="tooglebtnCollect_Click"  >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" x:Name="textTitle" FontSize="24" FontFamily="微软雅黑" />
+            <Border Grid.Column="0" Background="White">
+                <TextBlock x:Name="textIndex" FontSize="24" FontFamily="微软雅黑" Canvas.ZIndex="100"  />
+            </Border>
+
+            <ToggleButton Grid.Column="2"  x:Name="tooglebtnCollect" HorizontalAlignment="Right" Padding="0" Click="tooglebtnCollect_Click"  >
                 <TextBlock Text="&#xE224;"
                     FontSize="32" 
                     FontFamily="Segoe MDL2 Assets"
-                    TextAlignment="Center" SelectionHighlightColor="#FF0078D7" />
+                    TextAlignment="Center" SelectionHighlightColor="#FF0078D7"  />
             </ToggleButton>
-            <SemanticZoom HorizontalAlignment="Left" VerticalAlignment="Top">
-                <SemanticZoom.ZoomedInView>
-                    <GridView ScrollViewer.IsHorizontalScrollChainingEnabled="False" ScrollViewer.IsVerticalScrollChainingEnabled="False"/>
-                </SemanticZoom.ZoomedInView>
-                <SemanticZoom.ZoomedOutView>
-                    <GridView ScrollViewer.IsHorizontalScrollChainingEnabled="False" ScrollViewer.IsVerticalScrollChainingEnabled="False"/>
-                </SemanticZoom.ZoomedOutView>
-            </SemanticZoom>
         </Grid>
 
         <FlipView Grid.Row="1" x:Name="flipMain" SelectionChanged="flipMain_SelectionChanged">

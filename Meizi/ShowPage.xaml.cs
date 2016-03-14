@@ -20,6 +20,7 @@ namespace Meizi
     public sealed partial class ShowPage : Page
     {
         Url url;
+        DispatcherTimer timer = new DispatcherTimer();
         public ShowPage()
         {
             this.InitializeComponent();
@@ -36,13 +37,6 @@ namespace Meizi
         {
             try
             {
-                CollectionService dal = new CollectionService();
-                var model = dal.GetModel(r => r.ImageUrl == url.ImageUrl);
-                if (model != null)
-                {
-                    tooglebtnCollect.IsChecked = true;
-                }
-
                 string html = await Helper.GetHttpWebRequest(url.LinkUrl);
 
                 HtmlDocument doc = new HtmlDocument();
@@ -56,31 +50,41 @@ namespace Meizi
                 ).FirstOrDefault().ChildNodes;
 
                 int count;
-                //if (liPageNavi.Count() > 3)
-                //{
                 count = int.Parse(liPageNavi[liPageNavi.Count - 3].FirstChild.InnerText);
 
-                textIndex.Text = "(1";
-                textTitle.Text = String.Format("/{0}){1}", count.ToString(), title);
-                //}
-                //else
-                //{
-                //    count = 3;
-                //}
+                textIndex.Text = String.Format("(1/{0})", count.ToString());
+                textTitle.Text = String.Format("{0}              {0}",title);
 
                 for (int i = 0; i < count; i++)
                 {
                     LoadImage(i);
                 }
-                //var lis = doc.GetElementbyId("pins").SelectNodes("li");
 
+                CollectionService dal = new CollectionService();
+                var model = dal.GetModel(r => r.ImageUrl == url.ImageUrl);
+                if (model != null)
+                {
+                    tooglebtnCollect.IsChecked = true;
+                }
+
+                timer.Interval = new TimeSpan(0, 0, 0, 0, 20);
+                timer.Tick += Timer_Tick;
+                timer.Start();
             }
             catch (Exception ex)
             {
                 Helper.WriteExceptionLog(ex.Message);
-
             }
+        }
 
+        private void Timer_Tick(object sender, object e)
+        {
+            var left = textTitle.Margin.Left - 1;
+            if (textTitle.Margin.Left + textTitle.ActualWidth/2 <= 0)
+            {
+                left = 0;
+            }
+            textTitle.Margin = new Thickness(left, textTitle.Margin.Top, textTitle.Margin.Right, textTitle.Margin.Bottom);
         }
 
         private async void LoadImage(int index)
@@ -115,7 +119,6 @@ namespace Meizi
             catch (Exception ex)
             {
                 Helper.WriteExceptionLog(ex.Message);
-
             }
         }
 
@@ -173,13 +176,13 @@ namespace Meizi
                     await downloadOp.StartAsync();
                 }
             }
-
         }
 
         private void flipMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((FlipView)sender).SelectedIndex + 1;
-            textIndex.Text = String.Format("({0}", index.ToString());
+
+            textIndex.Text = String.Format("({0}/{1}", index.ToString(), textIndex.Text.Substring(textIndex.Text.IndexOf('/') + 1));
         }
 
         private void tooglebtnCollect_Click(object sender, RoutedEventArgs e)
@@ -201,6 +204,11 @@ namespace Meizi
                 dal.Delete(r => r.ImageUrl == this.url.ImageUrl);
             }
 
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            timer.Stop();
         }
     }
 
