@@ -40,7 +40,17 @@ namespace Meizi
         {
             try
             {
-                string html = await Helper.GetHttpWebRequest(strUrl);
+                string html;
+                do
+                {
+                    html = await Helper.GetHttpWebRequest(strUrl);
+                    if (String.IsNullOrEmpty(html) == false)
+                    {
+                        break;
+                    }
+                }
+                while (true);
+
                 Helper.ShowImageList(html, mainContent);
                 Loading.IsActive = false;
 
@@ -97,13 +107,23 @@ namespace Meizi
                     var index = page.pageNow;
                     var item = mainNavigationList.SelectedItem as ListBoxItem;
 
-                    var LinkUrl = item==null? "http://www.mzitu.com/" : item.Tag.ToString();
+                    var LinkUrl = item == null ? "http://www.mzitu.com/" : item.Tag.ToString();
                     if (String.IsNullOrEmpty(LinkUrl))
                     {
                         return;
                     }
                     string url = LinkUrl + "/page/" + (index + 1).ToString();
-                    string html = await Helper.GetHttpWebRequest(url);
+
+                    string html;
+                    do
+                    {
+                        html = await Helper.GetHttpWebRequest(url);
+                        if (String.IsNullOrEmpty(html) == false)
+                        {
+                            break;
+                        }
+                    }
+                    while (true);
                     Helper.AppendImageList(html, mainContent);
                     page.pageNow++;
                 }
@@ -118,7 +138,7 @@ namespace Meizi
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             int countInRow = (int)mainContent.ActualWidth / 200;
-            if (countInRow<2)
+            if (countInRow < 2)
             {
                 countInRow = 2;
             }

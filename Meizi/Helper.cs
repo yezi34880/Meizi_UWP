@@ -34,7 +34,6 @@ namespace Meizi
                     requestmsg.RequestUri = new Uri(String.Format("{0}?random={1}", url.TrimEnd('/'), DateTime.Now.ToString("HHmmssfff")));
                     requestmsg.Headers.Append("Accept-Language", "zh-CN,zh;q=0.8");
                     requestmsg.Headers.Append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36 QQBrowser/9.3.6581.400");
-
                     using (HttpResponseMessage response = await http.SendRequestAsync(requestmsg))
                     {
                         return response.Content.ToString();
@@ -43,7 +42,9 @@ namespace Meizi
             }
             catch (Exception)
             {
-                throw;
+
+                return "";
+                //throw;
             }
         }
 

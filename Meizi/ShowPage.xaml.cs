@@ -37,7 +37,18 @@ namespace Meizi
         {
             try
             {
-                string html = await Helper.GetHttpWebRequest(url.LinkUrl);
+                string html;
+                do
+                {
+                    html = await Helper.GetHttpWebRequest(url.LinkUrl);
+                    if (String.IsNullOrEmpty(html) == false)
+                    {
+                        break;
+                    }
+                }
+                while (true);
+
+                //string html = await Helper.GetHttpWebRequest(url.LinkUrl);
 
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
