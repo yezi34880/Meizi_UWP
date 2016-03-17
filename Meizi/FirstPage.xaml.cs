@@ -40,6 +40,7 @@ namespace Meizi
         {
             try
             {
+                //偶尔解析失败，循环解析，直到成功为止
                 string html;
                 do
                 {
