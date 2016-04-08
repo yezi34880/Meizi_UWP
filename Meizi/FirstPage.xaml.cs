@@ -9,6 +9,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -35,32 +36,6 @@ namespace Meizi
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
         }
 
-
-        private async void Load(string strUrl)
-        {
-            try
-            {
-                //偶尔解析失败，循环解析，直到成功为止
-                string html;
-                do
-                {
-                    html = await Helper.GetHttpWebRequest(strUrl);
-                    if (String.IsNullOrEmpty(html) == false)
-                    {
-                        break;
-                    }
-                }
-                while (true);
-
-                Helper.ShowImageList(html, mainContent);
-                Loading.IsActive = false;
-
-            }
-            catch (Exception e)
-            {
-                Helper.WriteExceptionLog(e.Message);
-            }
-        }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -72,23 +47,47 @@ namespace Meizi
             Load("http://www.mzitu.com/");
         }
 
-        private void mainContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void Load(string strUrl)
         {
-            if (e.AddedItems.Count < 1)
+            try
             {
-                return;
+                string html = await Helper.GetHtmlLoop(strUrl);
+
+
+                Helper.ShowImageList(html, mainContent);
+                Loading.IsActive = false;
+
             }
-            var image = (Image)((GridViewItem)e.AddedItems[0]).Content;
-            Url urlDetail = new Url
+            catch (Exception e)
             {
-                LinkUrl = image.Tag.ToString(),
-                ImageUrl = (image.Source as BitmapImage).UriSource.AbsoluteUri
-            };
-            if (String.IsNullOrEmpty(urlDetail.LinkUrl))
-            {
-                return;
+                Helper.WriteExceptionLog(e.Message);
             }
-            this.Frame.Navigate(typeof(ShowPage), urlDetail);
+        }
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            int countInRow = (int)mainContent.ActualWidth / 200;
+            if (countInRow < 2)
+            {
+                countInRow = 2;
+            }
+            var imageWidth = mainContent.ActualWidth / countInRow - 5;
+            foreach (var item in mainContent.Items)
+            {
+                var image = ((GridViewItem)item).Content as Image;
+                image.Width = imageWidth;
+                image.Height = imageWidth / 2 * 3;
+            }
+        }
+
+        private void mainContent_Loaded(object sender, RoutedEventArgs e)
+        {
+            //获取 滚动条 
+            var scrollviewer = Helper.FindVisualChildByName<ScrollViewer>(mainContent, "ScrollViewer");
+            var scrollbar = Helper.FindVisualChildByName<ScrollBar>(scrollviewer, "VerticalScrollBar");
+            if (scrollbar != null)
+            {
+                scrollbar.ValueChanged += Scrollbar_ValueChanged;//绑定滚动事件
+            }
         }
 
         private async void Scrollbar_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -97,7 +96,7 @@ namespace Meizi
             if (!Loading.IsActive && e.NewValue == (sender as ScrollBar).Maximum)
             {
                 var page = mainContent.Tag as PageNavi;
-                if (page.pageNow > page.pageCount)
+                if (page.pageNow >= page.pageCount)
                 {
                     return;
                 }
@@ -136,98 +135,85 @@ namespace Meizi
             }
         }
 
-        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void mainContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int countInRow = (int)mainContent.ActualWidth / 200;
-            if (countInRow < 2)
+            if (e.AddedItems.Count < 1)
             {
-                countInRow = 2;
+                return;
             }
-            var imageWidth = mainContent.ActualWidth / countInRow - 5;
-            foreach (var item in mainContent.Items)
+            var image = (Image)((GridViewItem)e.AddedItems[0]).Content;
+            Url urlDetail = new Url
             {
-                var image = ((GridViewItem)item).Content as Image;
-                image.Width = imageWidth;
-                image.Height = imageWidth / 2 * 3;
+                LinkUrl = image.Tag.ToString(),
+                ImageUrl = (image.Source as BitmapImage).UriSource.AbsoluteUri
+            };
+            if (String.IsNullOrEmpty(urlDetail.LinkUrl))
+            {
+                return;
             }
+
+            this.Frame.Navigate(typeof(ShowPage), urlDetail);
         }
 
-        private void mainContent_Loaded(object sender, RoutedEventArgs e)
-        {
-            //获取 滚动条 
-            var scrollviewer = Helper.FindVisualChildByName<ScrollViewer>(mainContent, "ScrollViewer");
-            var scrollbar = Helper.FindVisualChildByName<ScrollBar>(scrollviewer, "VerticalScrollBar");
-            if (scrollbar != null)
-            {
-                scrollbar.ValueChanged += Scrollbar_ValueChanged;//绑定滚动事件
-            }
-        }
 
+        #region 汉堡菜单
         private void menu_Tapped(object sender, TappedRoutedEventArgs e)
         {
             mainSplitView.IsPaneOpen = !mainSplitView.IsPaneOpen;
         }
 
-        private async void mainNavigationList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ListBoxItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             try
             {
-                if (e.AddedItems.Count < 1)
-                {
-                    return;
-                }
-                var item = e.AddedItems[0] as ListBoxItem;
-                if (item.Name == "AboutItem")
+                var item = sender as ListBoxItem;
+                if (item.Name == "AboutItem") //关于
                 {
                     AboutDialog ad = new AboutDialog();
                     await ad.ShowAsync();
-
                     return;
                 }
-                if (item.Name == "CollectItem")
+                if (item.Name == "SubjectItem") //专题分类
                 {
-                    Loading.IsActive = true;
-                    int countInRow = (int)mainContent.ActualWidth / 200;
-                    if (countInRow < 2)
-                    {
-                        countInRow = 2;
-                    }
-
-                    var imageWidth = mainContent.ActualWidth / countInRow - 5;
-                    CollectionService dal = new CollectionService();
-                    var listUrls = dal.GetList(r => true);
-                    mainContent.Items.Clear();
-                    foreach (var url in listUrls)
-                    {
-                        GridViewItem gvi = new GridViewItem();
-                        Image img = new Image();
-                        img.Source = new BitmapImage(new Uri(url.ImageUrl));
-                        img.Tag = url.LinkUrl;
-                        img.Width = imageWidth;
-                        img.Height = imageWidth / 2 * 3;
-                        gvi.Content = img;
-                        mainContent.Items.Add(gvi);
-                    }
-                    Loading.IsActive = false;
+                    this.Frame.Navigate(typeof(SubjectPage));
                     return;
                 }
+                if (item.Name == "CollectItem")  //收藏
+                {
+                    this.Frame.Navigate(typeof(CollectionPage));
+                    return;
+                }
+
+                //其他页面
                 var LinkUrl = (item.Tag ?? "").ToString();
                 if (String.IsNullOrEmpty(LinkUrl))
                 {
                     return;
                 }
                 Loading.IsActive = true;
+                txtTitle.Text = (item.Content as StackPanel).Tag.ToString();
                 string html = await Helper.GetHttpWebRequest(LinkUrl);
                 Helper.ShowImageList(html, mainContent);
                 Loading.IsActive = false;
-
             }
             catch (Exception ex)
             {
                 Helper.WriteExceptionLog(ex.Message);
             }
-
         }
 
+        #endregion
+
+        private async void MenuFlyoutItem_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var item = sender as MenuFlyoutItem;
+            if (item != null)
+            {
+                Loading.IsActive = true;
+                string html = await Helper.GetHttpWebRequest(item.Tag.ToString());
+                Helper.ShowImageList(html, mainContent);
+                Loading.IsActive = false;
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -28,6 +29,8 @@ namespace Meizi
         public CollectionPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Enabled;
+
         }
 
         private void mainContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -36,6 +39,12 @@ namespace Meizi
             {
                 return;
             }
+            //var collection = e.AddedItems[0] as Collection;
+            //var urlDetail = new Url
+            //{
+            //    LinkUrl = collection.LinkUrl,
+            //    ImageUrl = collection.ImageUrl
+            //};
             var image = (e.AddedItems[0] as GridViewItem).Content as Image;
             Url urlDetail = new Url
             {
@@ -51,19 +60,26 @@ namespace Meizi
             var imageWidth = mainContent.ActualWidth / countInRow - 5;
             foreach (var item in mainContent.Items)
             {
+
                 var image = ((GridViewItem)item).Content as Image;
                 image.Width = imageWidth;
                 image.Height = imageWidth / 2 * 3;
             }
         }
-
-        private void mainContent_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                return;
+            }
+
             int countInRow = (int)mainContent.ActualWidth / 200;
             var imageWidth = mainContent.ActualWidth / countInRow - 5;
 
             CollectionService dal = new CollectionService();
             var listUrls = dal.GetList(r => true);
+            //mainContent.ItemsSource = listUrls;
             foreach (var item in listUrls)
             {
                 GridViewItem gvi = new GridViewItem();
@@ -76,7 +92,6 @@ namespace Meizi
                 mainContent.Items.Add(gvi);
             }
             Loading.IsActive = false;
-
         }
     }
 }

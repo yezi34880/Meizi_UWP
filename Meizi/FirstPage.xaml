@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:DBHelper.Model"
-    mc:Ignorable="d" SizeChanged="Page_SizeChanged">
+    mc:Ignorable="d" >
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -17,42 +17,56 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Tapped="menu_Tapped">
                 <TextBlock Text="&#xE700;" FontSize="22"  FontFamily="Segoe MDL2 Assets"/>
             </Button>
-            <TextBlock Grid.Column="1"  TextAlignment="Center"  FontSize="24" FontFamily="微软雅黑">看妹子UWP</TextBlock>
+            <TextBlock x:Name="txtTitle" Grid.Column="1"  TextAlignment="Center"  FontSize="24" FontFamily="微软雅黑">看妹子UWP</TextBlock>
+            <Button Grid.Column="2" >
+                <TextBlock Text="&#xE8BA;" FontSize="22"  FontFamily="Segoe MDL2 Assets"/>
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="最新" Tag="http://www.mzitu.com/" Tapped="MenuFlyoutItem_Tapped" />
+                        <MenuFlyoutItem Text="最热" Tag="http://www.mzitu.com/hot" Tapped="MenuFlyoutItem_Tapped" />
+                        <MenuFlyoutItem Text="推荐" Tag="http://www.mzitu.com/best" Tapped="MenuFlyoutItem_Tapped" />
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
         </Grid>
         <Grid Grid.Row="1">
-            <SplitView  Name="mainSplitView"  DisplayMode="Overlay"  OpenPaneLength="140">
+            <SplitView  Name="mainSplitView" DisplayMode="Overlay" OpenPaneLength="140">
                 <SplitView.Pane>
-                    <ListBox Name="mainNavigationList"
-                         SelectionMode="Single"
-                         SelectionChanged="mainNavigationList_SelectionChanged">
-
-                        <ListBoxItem Tag="http://www.mzitu.com/" >
+                    <ListBox Name="mainNavigationList"  SelectionMode="Single">
+                        <ListBoxItem Tag="http://www.mzitu.com/" Tapped="ListBoxItem_Tapped"  >
                             <!--首页-->
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Tag="看妹子UWP">
                                 <TextBlock Text="&#xE80F;"   FontSize="22"   FontFamily="Segoe MDL2 Assets" Padding="0,4,0,0"/>
                                 <TextBlock Text="首页"   FontSize="20"  FontFamily="微软雅黑"  Margin="12,0,0,0"/>
                             </StackPanel>
                         </ListBoxItem>
-                        <ListBoxItem Tag="http://www.mzitu.com/xinggan" >
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="性"   FontSize="22"    FontFamily="微软雅黑" Padding="0,4,0,0"/>
+                        <ListBoxItem Tag="http://www.mzitu.com/xinggan"  Tapped="ListBoxItem_Tapped" >
+                            <StackPanel Orientation="Horizontal" Tag="性感妹子">
+                                <TextBlock Text="性"   FontSize="22" FontFamily="微软雅黑" Padding="0,4,0,0"/>
                                 <TextBlock Text="感妹子"  FontSize="20"   FontFamily="微软雅黑"   Margin="12,0,0,0"/>
                             </StackPanel>
                         </ListBoxItem>
-                        <ListBoxItem Tag="http://www.mzitu.com/japan" >
-                            <StackPanel Orientation="Horizontal">
+                        <ListBoxItem Tag="http://www.mzitu.com/japan" Tapped="ListBoxItem_Tapped"  >
+                            <StackPanel Orientation="Horizontal" Tag="日本妹子">
                                 <TextBlock Text="日"  FontSize="22"  FontFamily="微软雅黑" Padding="0,4,0,0"/>
                                 <TextBlock Text="本妹子"   FontSize="20"              FontFamily="微软雅黑"    Margin="12,0,0,0"/>
                             </StackPanel>
                         </ListBoxItem>
-                        <ListBoxItem Tag="http://www.mzitu.com/taiwan" >
-                            <StackPanel Orientation="Horizontal">
+                        <ListBoxItem Tag="http://www.mzitu.com/taiwan" Tapped="ListBoxItem_Tapped"  >
+                            <StackPanel Orientation="Horizontal" Tag="台湾妹子">
                                 <TextBlock Text="台"    FontSize="22"   FontFamily="微软雅黑"      Padding="0,4,0,0"/>
                                 <TextBlock Text="湾妹子"   FontSize="20"   FontFamily="微软雅黑" Margin="12,0,0,0"/>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Tag="http://www.mzitu.com/mm" Tapped="ListBoxItem_Tapped"  >
+                            <StackPanel Orientation="Horizontal" Tag="清纯妹子">
+                                <TextBlock Text="清"    FontSize="22"   FontFamily="微软雅黑"      Padding="0,4,0,0"/>
+                                <TextBlock Text="纯妹子"   FontSize="20"   FontFamily="微软雅黑" Margin="12,0,0,0"/>
                             </StackPanel>
                         </ListBoxItem>
                         <ListBoxItem IsEnabled="False" Padding="0,10,0,10">
@@ -60,21 +74,22 @@
                                 <TextBlock   Text="——————————————————————"    Padding="0"       Margin="0"/>
                             </StackPanel>
                         </ListBoxItem>
-                        <ListBoxItem  Name="CollectItem">
+                        <ListBoxItem Name="SubjectItem"  Tapped="ListBoxItem_Tapped" >
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="专"    FontSize="22"   FontFamily="微软雅黑"      Padding="0,4,0,0"/>
+                                <TextBlock Text="题分类"   FontSize="20"   FontFamily="微软雅黑" Margin="12,0,0,0"/>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Name="CollectItem"  Tapped="ListBoxItem_Tapped" >
                             <!--收藏-->
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE224;"   FontSize="22"   FontFamily="Segoe MDL2 Assets"  TextAlignment="Center"         Padding="0,4,0,0"    Name="LoginIcon"  />
                                 <Image Name="Avatar"  Visibility="Collapsed"  VerticalAlignment="Center"   Margin="0"                   Width="35">
                                 </Image>
-                                <TextBlock Text="收藏" 
-                                       FontSize="20" 
-                                       FontFamily="微软雅黑"
-                                       Margin="12,0,0,0"
-                                       Name="NickNameOrTip"
-                                       VerticalAlignment="Center"/>
+                                <TextBlock Text="收藏"   FontSize="20"   FontFamily="微软雅黑"  Margin="12,0,0,0"  Name="NickNameOrTip" VerticalAlignment="Center"/>
                             </StackPanel>
                         </ListBoxItem>
-                        <ListBoxItem  Name="AboutItem" >
+                        <ListBoxItem  Name="AboutItem"  Tapped="ListBoxItem_Tapped" >
                             <!--关于-->
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE8C9;" 
@@ -95,11 +110,13 @@
                             </StackPanel>
                         </ListBoxItem>
                     </ListBox>
-
                 </SplitView.Pane>
                 <SplitView.Content>
                     <Grid>
                         <GridView  x:Name="mainContent"  SelectionChanged="mainContent_SelectionChanged" Loaded="mainContent_Loaded" >
+
+
+
                         </GridView>
                         <ProgressRing Name="Loading"  Width="100"  Height="100"  IsActive="True">
                         </ProgressRing>

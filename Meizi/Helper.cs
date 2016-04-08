@@ -20,6 +20,9 @@ using DBHelper.Model;
 
 namespace Meizi
 {
+    /// <summary>
+    /// 辅助方法
+    /// </summary>
     public sealed class Helper
     {
         //获取HTML源代码
@@ -46,6 +49,27 @@ namespace Meizi
                 return "";
                 //throw;
             }
+        }
+
+        /// <summary>
+        /// 循环（防止解析失败）
+        /// </summary>
+        /// <param name="strUrl"></param>
+        /// <returns></returns>
+        public static async Task<string> GetHtmlLoop(string strUrl)
+        {
+            string html;
+            do
+            {
+                html = await Helper.GetHttpWebRequest(strUrl);
+                if (String.IsNullOrEmpty(html) == false)
+                {
+                    break;
+                }
+            }
+            while (true);
+
+            return html;
         }
 
         public static void ShowImageList(string html, GridView mainContent)
@@ -82,7 +106,8 @@ namespace Meizi
             var pagenavi = doc.DocumentNode.Descendants("a").Where(d =>
                 d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("page-numbers")
                 ).ToList();
-            var pageCount = int.Parse(pagenavi[pagenavi.Count - 2].FirstChild.InnerText);
+
+            var pageCount = pagenavi.Count > 0 ? int.Parse(pagenavi[pagenavi.Count - 2].FirstChild.InnerText) : 1;
 
             mainContent.Tag = new PageNavi()
             {
@@ -199,6 +224,9 @@ namespace Meizi
         }
     }
 
+    /// <summary>
+    /// 分页类
+    /// </summary>
     public class PageNavi
     {
         /// <summary>
@@ -211,6 +239,9 @@ namespace Meizi
         public int pageCount { get; set; }
     }
 
+    /// <summary>
+    /// 图片Url
+    /// </summary>
     public class Url
     {
         /// <summary>
@@ -223,6 +254,12 @@ namespace Meizi
         /// </summary>
         public string LinkUrl { get; set; }
 
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
+
+        public string Remark1 { get; set; }
     }
 
     public static class Extension

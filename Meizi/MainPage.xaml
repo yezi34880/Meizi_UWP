@@ -9,7 +9,7 @@
     mc:Ignorable="d" Loaded="MainPage_Loaded">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Frame Name="frameMain" Navigated="frameMain_Navigated">
+        <Frame Name="frameMain" Navigated="Frame_Navigated" >
 
         </Frame>
     </Grid>

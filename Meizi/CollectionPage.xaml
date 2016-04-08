@@ -9,8 +9,12 @@
     mc:Ignorable="d" SizeChanged="Page_SizeChanged" >
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <GridView  x:Name="mainContent"  SelectionChanged="mainContent_SelectionChanged" Loaded="mainContent_Loaded" >
-
+        <GridView  x:Name="mainContent"  SelectionChanged="mainContent_SelectionChanged" >
+            <!--<GridView.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding ImageUrl}" Tag="{Binding LinkUrl}" Width="{Binding mainContent.ActualWidth / 200,ElementName=mainContent}" />
+                </DataTemplate>
+            </GridView.ItemTemplate>-->
         </GridView>
         <ProgressRing Name="Loading"
                       Width="100"

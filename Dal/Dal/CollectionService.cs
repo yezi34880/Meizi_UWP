@@ -26,11 +26,20 @@ namespace DBHelper.Dal
 
         public int Add(Collection model)
         {
+            var m = GetModel(r => r.LinkUrl == model.LinkUrl);
+            if (m != null)
+            {
+                return 0;
+            }
             return db.Insert<Collection>(model);
         }
         public int Delete(Func<Collection, bool> where)
         {
             var model = GetModel(where);
+            if (model == null)
+            {
+                return 0;
+            }
             return db.Delete<Collection>(model);
         }
 
@@ -41,7 +50,7 @@ namespace DBHelper.Dal
 
         public List<Collection> GetList(Func<Collection, bool> where)
         {
-            return db.GetList<Collection>(where);
+            return db.GetList<Collection>(where).OrderByDescending(r=>r.ID).ToList();
         }
 
         public IEnumerable<Collection> GetListRandom(int num)

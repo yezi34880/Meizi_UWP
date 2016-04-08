@@ -10,17 +10,18 @@
     PrimaryButtonText="确定"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Margin="0,7,0,0">数据来源：</TextBlock>
-            <HyperlinkButton >http://www.mzitu.com/</HyperlinkButton>
+        <StackPanel>
+            <StackPanel  Orientation="Horizontal">
+                <TextBlock Margin="0,7,0,0">数据来源：</TextBlock>
+                <HyperlinkButton >http://www.mzitu.com/</HyperlinkButton>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="0,7,0,0">GitHub：</TextBlock>
+                <HyperlinkButton >https://github.com/yezi34880/Meizi_UWP</HyperlinkButton>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="0,7,0,0">作者：渃水</TextBlock>
+            </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBlock Margin="0,7,0,0">作者：渃水</TextBlock>
-        </StackPanel>
-
     </Grid>
 </ContentDialog>

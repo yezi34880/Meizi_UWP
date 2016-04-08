@@ -48,7 +48,7 @@ namespace DBHelper.DateBase
             }
         }
 
-        public  int Insert<T>(T model) where T : class
+        public int Insert<T>(T model) where T : class
         {
             try
             {
@@ -93,7 +93,7 @@ namespace DBHelper.DateBase
             }
         }
 
-        public T GetModel<T>(Func<T, bool> expWhere) where T :class
+        public T GetModel<T>(Func<T, bool> expWhere) where T : class
         {
             try
             {

@@ -5,7 +5,7 @@
     xmlns:local="using:Meizi"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" >
     <Page.Resources>
         <MenuFlyout x:Key="ImageMenuFlyout">
             <MenuFlyoutItem Text="保存图片" Click="SaveImage_Click"/>
@@ -28,16 +28,51 @@
                 <TextBlock x:Name="textIndex" FontSize="24" FontFamily="微软雅黑" Canvas.ZIndex="100"  />
             </Border>
 
-            <ToggleButton Grid.Column="2"  x:Name="tooglebtnCollect" HorizontalAlignment="Right" Padding="0" Click="tooglebtnCollect_Click"  >
-                <TextBlock Text="&#xE224;"
+            <StackPanel Grid.Column="2" Orientation="Horizontal" >
+                <ToggleButton x:Name="tooglebtnCollect" HorizontalAlignment="Right" Padding="0" Checked="tooglebtnCollect_Checked" Unchecked="tooglebtnCollect_Unchecked"  >
+                    <TextBlock Text="&#xE224;"
                     FontSize="32" 
                     FontFamily="Segoe MDL2 Assets"
                     TextAlignment="Center" SelectionHighlightColor="#FF0078D7"  />
-            </ToggleButton>
+                </ToggleButton>
+                <ToggleButton  x:Name="tooglebtnSplit" HorizontalAlignment="Right" Padding="0" Unchecked="tooglebtnSplit_Unchecked" Checked="tooglebtnSplit_Checked"  >
+                    <TextBlock Text="&#xE8AF;"
+                    FontSize="32" 
+                    FontFamily="Segoe MDL2 Assets"
+                    TextAlignment="Center" SelectionHighlightColor="#FF0078D7"  />
+                </ToggleButton>
+            </StackPanel>
+
         </Grid>
 
-        <FlipView Grid.Row="1" x:Name="flipMain" SelectionChanged="flipMain_SelectionChanged">
+        <Grid Grid.Row="1" x:Name="gridMain" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ListView Grid.Column="0" x:Name="listviewMain" SelectionChanged="listviewMain_SelectionChanged" >
 
-        </FlipView>
+            </ListView>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="100"></RowDefinition>
+                </Grid.RowDefinitions>
+                <FlipView Grid.Row="0" x:Name="flipMain" SelectionChanged="flipMain_SelectionChanged">
+
+                </FlipView>
+                <ScrollViewer Grid.Row="1" HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Auto" >
+                    <ScrollViewer.Content>
+                        <StackPanel Orientation="Horizontal" x:Name="stackpanelGuess" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
+
+                        </StackPanel>
+                    </ScrollViewer.Content>
+                </ScrollViewer>
+                <!--<ListView Grid.Row="1"  x:Name="listviewGuess">
+
+                </ListView>-->
+            </Grid>
+
+        </Grid>
     </Grid>
 </Page>

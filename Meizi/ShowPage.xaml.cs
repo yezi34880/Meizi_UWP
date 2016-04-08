@@ -2,10 +2,13 @@
 using DBHelper.Model;
 using HtmlAgilityPack;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -21,34 +24,28 @@ namespace Meizi
     {
         Url url;
         DispatcherTimer timer = new DispatcherTimer();
+
+        List<Url> listGuess = new List<Url>();
+
+
         public ShowPage()
         {
             this.InitializeComponent();
-
+            //this.NavigationCacheMode = NavigationCacheMode.Enabled;
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            //这个e.Parameter是获取传递过来的参数
             this.url = (Url)e.Parameter;
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void LoadPage()
         {
             try
             {
-                string html;
-                do
-                {
-                    html = await Helper.GetHttpWebRequest(url.LinkUrl);
-                    if (String.IsNullOrEmpty(html) == false)
-                    {
-                        break;
-                    }
-                }
-                while (true);
+                string html = await Helper.GetHtmlLoop(url.LinkUrl);
 
-                //string html = await Helper.GetHttpWebRequest(url.LinkUrl);
+                tooglebtnSplit.IsChecked = true; //默认展开侧面列表
 
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
@@ -64,12 +61,7 @@ namespace Meizi
                 count = int.Parse(liPageNavi[liPageNavi.Count - 3].FirstChild.InnerText);
 
                 textIndex.Text = String.Format("(1/{0})", count.ToString());
-                textTitle.Text = String.Format("{0}              {0}",title);
-
-                for (int i = 0; i < count; i++)
-                {
-                    LoadImage(i);
-                }
+                textTitle.Text = String.Format("{0}              {0}", title);
 
                 CollectionService dal = new CollectionService();
                 var model = dal.GetModel(r => r.ImageUrl == url.ImageUrl);
@@ -81,24 +73,35 @@ namespace Meizi
                 timer.Interval = new TimeSpan(0, 0, 0, 0, 20);
                 timer.Tick += Timer_Tick;
                 timer.Start();
+
+                listGuess.Clear();
+                flipMain.Items.Clear();
+                listviewMain.Items.Clear();
+                for (int i = 0; i < count; i++)
+                {
+                    await LoadImage(i);
+                }
+
             }
             catch (Exception ex)
             {
                 Helper.WriteExceptionLog(ex.Message);
             }
+
         }
+
 
         private void Timer_Tick(object sender, object e)
         {
             var left = textTitle.Margin.Left - 1;
-            if (textTitle.Margin.Left + textTitle.ActualWidth/2 <= 0)
+            if (textTitle.Margin.Left + textTitle.ActualWidth / 2 <= 0)
             {
                 left = 0;
             }
             textTitle.Margin = new Thickness(left, textTitle.Margin.Top, textTitle.Margin.Right, textTitle.Margin.Bottom);
         }
 
-        private async void LoadImage(int index)
+        private async Task<string> LoadImage(int index)
         {
             try
             {
@@ -112,13 +115,15 @@ namespace Meizi
                 ).FirstOrDefault().FirstChild.FirstChild.FirstChild.GetAttributeValue("src", "");
 
                 FlipViewItem flipitem = new FlipViewItem();
+                ScrollViewer scrollview = new ScrollViewer();
+                scrollview.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+                scrollview.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                scrollview.ZoomMode = ZoomMode.Enabled;
+
                 Image image = new Image();
                 image.Source = new BitmapImage(new Uri(imageUrl));
                 image.Height = flipMain.ActualHeight;
-                ScrollViewer scrollview = new ScrollViewer();
-                scrollview.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-                scrollview.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-                scrollview.ZoomMode = ZoomMode.Enabled;
+
                 scrollview.Content = image;
                 flipitem.Tag = imageUrl;
                 flipitem.Content = scrollview;
@@ -126,11 +131,59 @@ namespace Meizi
                 flipitem.RightTapped += Flipitem_RightTapped;
                 flipMain.Items.Add(flipitem);
 
+                ListViewItem lvi = new ListViewItem();
+                Image image1 = new Image();
+                image1.Source = new BitmapImage(new Uri(imageUrl));
+
+                image1.Width = listviewMain.ActualWidth;
+                lvi.Padding = new Thickness(-8, 0, 0, 3);
+                lvi.Content = image1;
+                listviewMain.Items.Add(lvi);
+
+
+                //加载 猜你喜欢
+                var divGuess = doc.DocumentNode.Descendants("dl").Where(d =>
+                       d.Attributes.Contains("class") && d.Attributes["class"].Value == "hotlist"
+                ).FirstOrDefault();
+                foreach (var node in divGuess.ChildNodes)
+                {
+                    if (node.NodeType == HtmlNodeType.Element && node.Name == "dd")
+                    {
+                        var a = node.FirstChild;
+                        listGuess.Add(new Url
+                        {
+                            LinkUrl = a.GetAttributeValue("href", ""),
+                            ImageUrl = a.FirstChild.GetAttributeValue("data-original", "")
+                        });
+                    }
+                }
+
+                var divGuess1 = doc.DocumentNode.Descendants("div").Where(d =>
+                         d.Attributes.Contains("class") && d.Attributes["class"].Value == "widgets_top"
+                ).FirstOrDefault();
+                foreach (var node in divGuess.ChildNodes)
+                {
+                    if (node.NodeType == HtmlNodeType.Element && node.Name == "a")
+                    {
+                        var url = new Url
+                        {
+                            LinkUrl = node.GetAttributeValue("href", ""),
+                            ImageUrl = node.FirstChild.GetAttributeValue("src", "")
+                        };
+                        listGuess.Add(url);
+                    }
+                }
+                if (listGuess.Count < 10)
+                {
+                    ShowGuess(0, 10);
+                }
+
             }
             catch (Exception ex)
             {
                 Helper.WriteExceptionLog(ex.Message);
             }
+            return "";
         }
 
         private void Flipitem_RightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -192,34 +245,106 @@ namespace Meizi
         private void flipMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((FlipView)sender).SelectedIndex + 1;
-
+            if (index < 1)
+            {
+                return;
+            }
             textIndex.Text = String.Format("({0}/{1}", index.ToString(), textIndex.Text.Substring(textIndex.Text.IndexOf('/') + 1));
+
+            stackpanelGuess.Children.Clear();
+            ShowGuess(10 * (index - 1), index * 10);
         }
 
-        private void tooglebtnCollect_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 展示【猜你喜欢】
+        /// </summary>
+        /// <param name="indexStart">开始图片</param>
+        /// <param name="indexEnd">结束图片</param>
+        private void ShowGuess(int indexStart, int indexEnd)
         {
-            var isCheck = tooglebtnCollect.IsChecked;
-            if (isCheck == true)
+            for (int i = indexStart; i < indexEnd; i++)
             {
-                CollectionService dal = new CollectionService();
-                dal.Add(new Collection
+                if (listGuess.Count > i)
                 {
-                    LinkUrl = this.url.LinkUrl,
-                    ImageUrl = this.url.ImageUrl,
-                    Title = ""
-                });
+                    Image image = new Image();
+                    image.Source = new BitmapImage(new Uri(listGuess[i].ImageUrl));
+                    image.Tag = listGuess[i].LinkUrl;
+                    image.Height = 90;
+                    image.Tapped += Image_Tapped;
+                    stackpanelGuess.Children.Add(image);
+
+                }
             }
-            if (isCheck == false)
+        }
+
+        private void Image_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var image = sender as Image;
+            if (image == null)
             {
-                CollectionService dal = new CollectionService();
-                dal.Delete(r => r.ImageUrl == this.url.ImageUrl);
+                return;
             }
 
+            Url urlDetail = new Url
+            {
+                LinkUrl = image.Tag.ToString(),
+                ImageUrl = (image.Source as BitmapImage).UriSource.AbsoluteUri
+            };
+
+            this.Frame.Navigate(typeof(ShowPage), urlDetail);
+
+        }
+
+        private void listviewMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            flipMain.SelectedIndex = (sender as ListView).SelectedIndex;
+
+        }
+
+
+        #region 收藏，数据库
+        private void tooglebtnCollect_Checked(object sender, RoutedEventArgs e)
+        {
+            CollectionService dal = new CollectionService();
+            dal.Add(new Collection
+            {
+                LinkUrl = this.url.LinkUrl,
+                ImageUrl = this.url.ImageUrl,
+                Title = ""
+            });
+
+        }
+
+        private void tooglebtnCollect_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CollectionService dal = new CollectionService();
+            dal.Delete(r => r.ImageUrl == this.url.ImageUrl);
+        }
+        #endregion
+
+        #region 打开、折叠左侧列表
+        private void tooglebtnSplit_Unchecked(object sender, RoutedEventArgs e)
+        {
+            gridMain.ColumnDefinitions[0].Width = new GridLength(0);
+        }
+
+        private void tooglebtnSplit_Checked(object sender, RoutedEventArgs e)
+        {
+            gridMain.ColumnDefinitions[0].Width = new GridLength(160);
+        }
+        #endregion
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadPage();
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            timer.Stop();
+            if (timer != null && timer.IsEnabled)
+            {
+                timer.Stop();
+            }
         }
     }
 

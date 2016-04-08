@@ -45,6 +45,10 @@ namespace Meizi
             };
         }
 
+        private void Frame_Navigated(object sender, NavigationEventArgs e)
+        {
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = frameMain.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+        }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -54,12 +58,8 @@ namespace Meizi
             frameMain.Navigate(typeof(FirstPage));
         }
 
-        private void frameMain_Navigated(object sender, NavigationEventArgs e)
-        {
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                frameMain.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
 
-        }
+
 
     }
 }
