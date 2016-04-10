@@ -35,12 +35,18 @@
                     FontFamily="Segoe MDL2 Assets"
                     TextAlignment="Center" SelectionHighlightColor="#FF0078D7"  />
                 </ToggleButton>
-                <ToggleButton  x:Name="tooglebtnSplit" HorizontalAlignment="Right" Padding="0" Unchecked="tooglebtnSplit_Unchecked" Checked="tooglebtnSplit_Checked"  >
+                <Button Width="46">
                     <TextBlock Text="&#xE8AF;"
-                    FontSize="32" 
-                    FontFamily="Segoe MDL2 Assets"
-                    TextAlignment="Center" SelectionHighlightColor="#FF0078D7"  />
-                </ToggleButton>
+                        FontSize="32" 
+                        FontFamily="Segoe MDL2 Assets"
+                        TextAlignment="Center" SelectionHighlightColor="#FF0078D7"  />
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <ToggleMenuFlyoutItem x:Name="tmfiThum" IsChecked="True" Tapped="tmfiThum_Tapped">缩略图</ToggleMenuFlyoutItem>
+                            <ToggleMenuFlyoutItem x:Name="tmfiGuess"  IsChecked="True" Tapped="tmfiGuess_Tapped" >猜你喜欢</ToggleMenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
             </StackPanel>
 
         </Grid>
@@ -53,7 +59,7 @@
             <ListView Grid.Column="0" x:Name="listviewMain" SelectionChanged="listviewMain_SelectionChanged" >
 
             </ListView>
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" x:Name="gridMainImage">
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition Height="100"></RowDefinition>

@@ -45,8 +45,6 @@ namespace Meizi
             {
                 string html = await Helper.GetHtmlLoop(url.LinkUrl);
 
-                tooglebtnSplit.IsChecked = true; //默认展开侧面列表
-
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
                 string title = doc.DocumentNode.Descendants("h2").Where(d =>
@@ -322,18 +320,6 @@ namespace Meizi
         }
         #endregion
 
-        #region 打开、折叠左侧列表
-        private void tooglebtnSplit_Unchecked(object sender, RoutedEventArgs e)
-        {
-            gridMain.ColumnDefinitions[0].Width = new GridLength(0);
-        }
-
-        private void tooglebtnSplit_Checked(object sender, RoutedEventArgs e)
-        {
-            gridMain.ColumnDefinitions[0].Width = new GridLength(160);
-        }
-        #endregion
-
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             LoadPage();
@@ -346,6 +332,34 @@ namespace Meizi
                 timer.Stop();
             }
         }
+
+        #region 打开、关闭左侧缩略图
+        private void tmfiThum_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (tmfiThum.IsChecked == false)
+            {
+                gridMain.ColumnDefinitions[0].Width = new GridLength(0);
+            }
+            else
+            {
+                gridMain.ColumnDefinitions[0].Width = new GridLength(160);
+            }
+        }
+        #endregion
+
+        #region 打开关闭 猜你喜欢
+        private void tmfiGuess_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (tmfiGuess.IsChecked == false)
+            {
+                gridMainImage.RowDefinitions[1].Height = new GridLength(0);
+            }
+            else
+            {
+                gridMainImage.RowDefinitions[1].Height = new GridLength(100);
+            }
+        } 
+        #endregion
     }
 
 }
