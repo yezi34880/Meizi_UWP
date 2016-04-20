@@ -85,24 +85,33 @@ namespace Meizi
             var imageWidth = mainContent.ActualWidth / countInRow - 5;
 
             var lis = doc.GetElementbyId("pins").SelectNodes("li");
-            mainContent.Items.Clear();
 
+            List<Url> listUrl = new List<Url>();
             foreach (var li in lis)
             {
                 var a = li.FirstChild;
-                GridViewItem gvi = new GridViewItem();
-
                 var img = a.FirstChild;
-                var imgUrl = img.GetAttributeValue("data-original", "");
-                Image image = new Image();
-                image.Source = new BitmapImage(new Uri(imgUrl));
-                image.Width = imageWidth;
-                image.Height = imageWidth / 2 * 3;
-                image.Tag = li.FirstChild.GetAttributeValue("href", "");
-                gvi.Content = image;
-                mainContent.Items.Add(gvi);
+
+                listUrl.Add(new Url
+                {
+                    LinkUrl = li.FirstChild.GetAttributeValue("href", ""),
+                    ImageUrl = img.GetAttributeValue("data-original", "")
+
+                });
+
+                //GridViewItem gvi = new GridViewItem();
+
+                //var imgUrl = img.GetAttributeValue("data-original", "");
+                //Image image = new Image();
+                //image.Source = new BitmapImage(new Uri(imgUrl));
+                //image.Width = imageWidth;
+                //image.Height = imageWidth / 2 * 3;
+                //image.Tag = li.FirstChild.GetAttributeValue("href", "");
+                //gvi.Content = image;
+                //mainContent.Items.Add(gvi);
 
             }
+            mainContent.ItemsSource = listUrl;
             var pagenavi = doc.DocumentNode.Descendants("a").Where(d =>
                 d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("page-numbers")
                 ).ToList();

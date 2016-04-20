@@ -140,7 +140,22 @@ namespace Meizi
 
 
                 //加载 猜你喜欢
-                var divGuess = doc.DocumentNode.Descendants("dl").Where(d =>
+                var divGuess1 = doc.DocumentNode.Descendants("div").Where(d =>
+                         d.Attributes.Contains("class") && d.Attributes["class"].Value == "widgets_top"
+                ).FirstOrDefault();
+                foreach (var node in divGuess1.ChildNodes)
+                {
+                    if (node.NodeType == HtmlNodeType.Element && node.Name == "a")
+                    {
+                        var url = new Url
+                        {
+                            LinkUrl = node.GetAttributeValue("href", ""),
+                            ImageUrl = node.FirstChild.GetAttributeValue("src", "")
+                        };
+                        listGuess.Add(url);
+                    }
+                }
+                 var divGuess = doc.DocumentNode.Descendants("dl").Where(d =>
                        d.Attributes.Contains("class") && d.Attributes["class"].Value == "hotlist"
                 ).FirstOrDefault();
                 foreach (var node in divGuess.ChildNodes)
@@ -155,23 +170,7 @@ namespace Meizi
                         });
                     }
                 }
-
-                var divGuess1 = doc.DocumentNode.Descendants("div").Where(d =>
-                         d.Attributes.Contains("class") && d.Attributes["class"].Value == "widgets_top"
-                ).FirstOrDefault();
-                foreach (var node in divGuess.ChildNodes)
-                {
-                    if (node.NodeType == HtmlNodeType.Element && node.Name == "a")
-                    {
-                        var url = new Url
-                        {
-                            LinkUrl = node.GetAttributeValue("href", ""),
-                            ImageUrl = node.FirstChild.GetAttributeValue("src", "")
-                        };
-                        listGuess.Add(url);
-                    }
-                }
-                if (listGuess.Count < 10)
+               if (listGuess.Count <= 10)
                 {
                     ShowGuess(0, 10);
                 }

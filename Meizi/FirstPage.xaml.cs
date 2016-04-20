@@ -141,17 +141,7 @@ namespace Meizi
             {
                 return;
             }
-            var image = (Image)((GridViewItem)e.AddedItems[0]).Content;
-            Url urlDetail = new Url
-            {
-                LinkUrl = image.Tag.ToString(),
-                ImageUrl = (image.Source as BitmapImage).UriSource.AbsoluteUri
-            };
-            if (String.IsNullOrEmpty(urlDetail.LinkUrl))
-            {
-                return;
-            }
-
+            Url urlDetail = e.AddedItems[0] as Url;
             this.Frame.Navigate(typeof(ShowPage), urlDetail);
         }
 
