@@ -116,7 +116,15 @@ namespace Meizi
                 d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("page-numbers")
                 ).ToList();
 
-            var pageCount = pagenavi.Count > 0 ? int.Parse(pagenavi[pagenavi.Count - 2].FirstChild.InnerText) : 1;
+            int pageCount = 1;
+            try
+            {
+                pageCount = pagenavi.Count > 2 ? int.Parse(pagenavi[pagenavi.Count - 2].InnerText) : 1;
+            }
+            catch (Exception)
+            {
+                //throw;
+            }
 
             mainContent.Tag = new PageNavi()
             {
