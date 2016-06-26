@@ -7,9 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:DBHelper.Model"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged" >
-    <Page.Resources>
-        <local:GridImageSizeConvert x:Key="convertImageWidth" />
-    </Page.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="36"></RowDefinition>

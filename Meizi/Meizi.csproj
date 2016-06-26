@@ -96,9 +96,10 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="Meizi_StoreKey.pfx" />
     <None Include="project.json" />
-    <Content Include="Assets\img\M.png" />
-    <Content Include="Assets\img\M.scale-200.png" />
-    <Content Include="Assets\img\M.scale-400.png" />
+    <Content Include="Assets\img\M1.png" />
+    <Content Include="Assets\img\M2.png" />
+    <Content Include="Assets\img\M2.scale-100.png" />
+    <Content Include="Assets\img\M3.png" />
     <Content Include="Assets\img\NewStoreLogo.scale-100.png" />
     <Content Include="Assets\img\NewStoreLogo.scale-125.png" />
     <Content Include="Assets\img\NewStoreLogo.scale-150.png" />
