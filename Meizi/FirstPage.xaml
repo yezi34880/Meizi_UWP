@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:DBHelper.Model"
-    mc:Ignorable="d" >
+    mc:Ignorable="d" SizeChanged="Page_SizeChanged" >
     <Page.Resources>
         <local:GridImageSizeConvert x:Key="convertImageWidth" />
     </Page.Resources>
@@ -116,11 +116,7 @@
                 <SplitView.Content>
                     <Grid>
                         <GridView  x:Name="mainContent"  SelectionChanged="mainContent_SelectionChanged" Loaded="mainContent_Loaded" >
-                            <GridView.ItemTemplate>
-                                <DataTemplate>
-                                    <Image Source="{Binding ImageUrl}"  Tag="{Binding LinkUrl}"  Width="{Binding ElementName=mainContent,Path=ActualWidth,Converter={StaticResource convertImageWidth}}"/>
-                                </DataTemplate>
-                            </GridView.ItemTemplate>
+
                         </GridView>
                         <ProgressRing Name="Loading"  Width="100"  Height="100"  IsActive="True">
                         </ProgressRing>

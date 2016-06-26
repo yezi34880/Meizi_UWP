@@ -39,12 +39,7 @@ namespace Meizi
             {
                 return;
             }
-            //var collection = e.AddedItems[0] as Collection;
-            //var urlDetail = new Url
-            //{
-            //    LinkUrl = collection.LinkUrl,
-            //    ImageUrl = collection.ImageUrl
-            //};
+
             var image = (e.AddedItems[0] as GridViewItem).Content as Image;
             Url urlDetail = new Url
             {

@@ -135,13 +135,21 @@ namespace Meizi
             }
         }
 
+
         private void mainContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count < 1)
             {
                 return;
             }
-            Url urlDetail = e.AddedItems[0] as Url;
+            var gvi = e.AddedItems[0] as GridViewItem;
+            var image = gvi.Content as Image;
+
+            Url urlDetail = new Url()
+            {
+                ImageUrl=(image.Source as BitmapImage).UriSource.OriginalString,
+                LinkUrl = image.Tag.ToString()
+            };
             this.Frame.Navigate(typeof(ShowPage), urlDetail);
         }
 
