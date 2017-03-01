@@ -1,0 +1,6 @@
+MainPackage=E:\SourceTry\妹子图片\Meizi\Meizi\bin\x64\Release\Upload\Meizi_1.1.7.0_x64.appx
+SymbolPackage=E:\SourceTry\妹子图片\Meizi\Meizi\AppPackages\Meizi_1.1.7.0\Meizi_1.1.7.0_x64.appxsym
+ResourcePack=E:\SourceTry\妹子图片\Meizi\Meizi\_scale-100.appx
+ResourcePack=E:\SourceTry\妹子图片\Meizi\Meizi\_scale-125.appx
+ResourcePack=E:\SourceTry\妹子图片\Meizi\Meizi\_scale-150.appx
+ResourcePack=E:\SourceTry\妹子图片\Meizi\Meizi\_scale-400.appx

@@ -1,0 +1,2 @@
+MainPackage=E:\SourceTry\妹子图片\Meizi\Meizi\bin\x86\Release\Meizi_1.1.7.0_x86.appx
+SymbolPackage=E:\SourceTry\妹子图片\Meizi\Meizi\AppPackages\Meizi_1.1.7.0_Test\Meizi_1.1.7.0_x86.appxsym

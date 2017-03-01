@@ -214,29 +214,40 @@ namespace Meizi
 
         private async void SaveImageAll_Click(object sender, RoutedEventArgs e)
         {
-            var nowItem = flipMain.SelectedItem as FlipViewItem;
-            if (nowItem == null)
+            try
             {
-                return;
-            }
-            var imagePath = nowItem.Tag.ToString();
-
-            FolderPicker picker = new FolderPicker();
-
-            picker.FileTypeFilter.Add(".jpg");
-
-            var sfolder = await picker.PickSingleFolderAsync();
-            if (sfolder != null)
-            {
-                BackgroundDownloader downloader = new BackgroundDownloader();
-                foreach (FlipViewItem item in flipMain.Items)
+                var nowItem = flipMain.SelectedItem as FlipViewItem;
+                if (nowItem == null)
                 {
-                    var imageUrl = item.Tag.ToString();
-                    StorageFile sFile = await sfolder.CreateFileAsync(DateTime.Now.ToString("yyyyMMddHHmmssfff") + imageUrl.Substring(imageUrl.LastIndexOf('.')));
-                    var downloadOp = downloader.CreateDownload(new Uri(imageUrl), sFile);
-                    await downloadOp.StartAsync();
+                    return;
+                }
+                var imagePath = nowItem.Tag.ToString();
+
+                FolderPicker picker = new FolderPicker();
+
+                picker.FileTypeFilter.Add(".jpg");
+
+                var sfolder = await picker.PickSingleFolderAsync();
+                if (sfolder != null)
+                {
+                    ToastHelper.ToastShow("开始下载");
+                    BackgroundDownloader downloader = new BackgroundDownloader();
+                    foreach (FlipViewItem item in flipMain.Items)
+                    {
+                        var imageUrl = item.Tag.ToString();
+                        StorageFile sFile = await sfolder.CreateFileAsync(DateTime.Now.ToString("yyyyMMddHHmmssfff") + imageUrl.Substring(imageUrl.LastIndexOf('.')));
+                        var downloadOp = downloader.CreateDownload(new Uri(imageUrl), sFile);
+                        await downloadOp.StartAsync();
+                    }
+                    ToastHelper.ToastShow("下载完成");
+
                 }
             }
+            catch (Exception ex)
+            {
+
+            }
+
         }
 
         private void flipMain_SelectionChanged(object sender, SelectionChangedEventArgs e)

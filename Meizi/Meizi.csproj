@@ -173,6 +173,7 @@
     <Compile Include="SubjectPage.xaml.cs">
       <DependentUpon>SubjectPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ToastHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

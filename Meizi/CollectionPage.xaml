@@ -9,17 +9,20 @@
     mc:Ignorable="d" SizeChanged="Page_SizeChanged" >
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <GridView  x:Name="mainContent"  SelectionChanged="mainContent_SelectionChanged" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="38"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock   Grid.Row="0"  TextAlignment="Center"  FontSize="24" FontFamily="微软雅黑">我的收藏</TextBlock>
+        <Button  x:Name="btnDownloadAll" HorizontalAlignment="Right"  Height="38" Tapped="btnDownloadAll_Tapped">下载全部</Button>
+        <GridView  x:Name="mainContent"  Grid.Row="1"  SelectionChanged="mainContent_SelectionChanged" >
             <!--<GridView.ItemTemplate>
                 <DataTemplate>
                     <Image Source="{Binding ImageUrl}" Tag="{Binding LinkUrl}" Width="{Binding mainContent.ActualWidth / 200,ElementName=mainContent}" />
                 </DataTemplate>
             </GridView.ItemTemplate>-->
         </GridView>
-        <ProgressRing Name="Loading"
-                      Width="100"
-                      Height="100"
-                      IsActive="True">
+        <ProgressRing  Grid.Row="1"  Name="Loading"  Width="100"  Height="100" IsActive="True">
         </ProgressRing>
     </Grid>
 </Page>
